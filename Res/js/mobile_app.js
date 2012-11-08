@@ -28,8 +28,12 @@ require(['jquery', 'backbone','underscore','model','views','jquery.mobile'], fun
 
 		Accounts: function() {
 			console.log('Accounts');
+			var accList=new AccountList();
+			accList.fetch();
+			/*
 			var loginModel=new LoginModel();
 			new LoginPageView({model:loginModel});
+			*/
 		},
 	});
 	

@@ -31,24 +31,6 @@ define(['jquery','backbone','underscore','jquery.mobile'],function(){
 	    params.data = JSON.stringify(model);
 	  }
 
-	  // For older servers, emulate JSON by encoding the request into an HTML-form.
-	  if (Backbone.emulateJSON) {
-	    params.contentType = 'application/x-www-form-urlencoded';
-	    params.data = params.data ? {model: params.data} : {};
-	  }
-
-	  // For older servers, emulate HTTP by mimicking the HTTP method with `_method`
-	  // And an `X-HTTP-Method-Override` header.
-	  if (Backbone.emulateHTTP) {
-	    if (type === 'PUT' || type === 'DELETE') {
-	      if (Backbone.emulateJSON) params.data._method = type;
-	      params.type = 'POST';
-	      params.beforeSend = function(xhr) {
-	        xhr.setRequestHeader('X-HTTP-Method-Override', type);
-	      };
-	    }
-	  }
-
 	  // Don't process data on a non-GET request.
 	  if (params.type !== 'GET' && !Backbone.emulateJSON) {
 	    params.processData = false;
@@ -75,6 +57,10 @@ define(['jquery','backbone','underscore','jquery.mobile'],function(){
 		
 	    if (error) error(model, xhr, options);
 	    model.trigger('error', model, xhr, options);
+	  };
+	  
+	  options.status={
+		401: function() { console.log('401'); }	  
 	  };
 	  
 	  $.mobile.showPageLoadingMsg();
