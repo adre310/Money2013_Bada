@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Money2013</title>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+<title>Money2013</title>
 <link rel="stylesheet" href='./css/money2013.min.css' />
 <link rel="stylesheet" href='./css/jquery.mobile.structure-1.2.0.min.css' />
 <link rel="stylesheet" href='./css/mobiscroll-2.0.3.min.css' />
@@ -25,7 +27,9 @@ requirejs.config({
         'mobiscroll': './js/lib/mobiscroll-2.0.3.min',
         'app':   './js/mobile_app',
         'model': './js/model/model',
+        'base_view': './js/views/base_view',
         'views': './js/views/mobile_views',
+        'backbone_ext': './js/backbone_ext',
     },
     shim: {
         'jquery.mobile-config': ['jquery'],
@@ -37,11 +41,6 @@ requirejs.config({
 			deps: ['jquery','underscore'],
 			exports: 'Backbone'
 		 },
-         'backbone.forms': ['backbone','underscore'],
-         'backbone.validation': ['backbone'],
-         'app' : ['backbone', 'model', 'views'],
-         'model' : ['jquery', 'backbone'],
-         'views' : ['jquery.mobile', 'backbone','underscore','backbone.forms','backbone.validation'],
 	}
 	});
 </script>

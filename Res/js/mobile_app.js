@@ -3,7 +3,7 @@
  *
 */
 
-require(['jquery', 'jquery.mobile','backbone'], function($) {
+require(['jquery', 'backbone','underscore','model','views','jquery.mobile'], function($,Backbone,_) {
 	var App = Backbone.Router.extend({
 		routes: {
 			"" : "Accounts",
@@ -28,10 +28,8 @@ require(['jquery', 'jquery.mobile','backbone'], function($) {
 
 		Accounts: function() {
 			console.log('Accounts');
-            var account_list = new AccountList();
-            account_list.fetch({success:function () {
-                if (callback) callback(account_list);
-            }});
+			var loginModel=new LoginModel();
+			new LoginPageView({model:loginModel});
 		},
 	});
 	

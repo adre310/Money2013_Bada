@@ -1,5 +1,11 @@
-define([],function() {
+/*
+ * Models
+ */
 
+define(['jquery', 'backbone', 'backbone_ext'],function($, Backbone) {
+	window.LoginModel=Backbone.Model.extend({
+	});
+	
 	window.Pay=Backbone.Model.extend({
 			
 	});
