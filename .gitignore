@@ -1,0 +1,4 @@
+.Target-Debug\*
+DebugInfo\*
+manifest.xml
+Money2013_Target-Release.zip
