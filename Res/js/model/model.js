@@ -4,6 +4,15 @@
 
 define(['jquery', 'backbone', 'backbone_ext'],function($, Backbone) {
 	window.LoginModel=Backbone.Model.extend({
+		url: function() {
+			return Routing.generate('user_rest_api_v1_post_login');
+		},
+		validation: {
+			login: {
+				required: true
+			}
+		}
+		
 	});
 	
 	window.Pay=Backbone.Model.extend({
