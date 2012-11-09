@@ -5,6 +5,8 @@
 
 require(['jquery', 'backbone','underscore','model','views','jquery.mobile'], function($,Backbone,_) {
 	var App = Backbone.Router.extend({
+		isLogin : false,
+		
 		routes: {
 			"" : "Accounts",
 			
@@ -28,19 +30,20 @@ require(['jquery', 'backbone','underscore','model','views','jquery.mobile'], fun
 
 		Accounts: function() {
 			console.log('Accounts');
-			var accList=new AccountList();
-			accList.fetch();
-			/*
-			var loginModel=new LoginModel();
-			new LoginPageView({model:loginModel});
-			*/
+			if(this.isLogin) {
+				var accountList=new AccountList();
+				new AccountListPageView({model:accountList});
+			} else {
+				var loginModel=new LoginModel();
+				new LoginPageView({model:loginModel});				
+			}
 		},
 	});
 	
 	
     $(function () {
     	Routing.setBaseUrl('https://172.26.10.23:9443/Money2013/web/app_dev.php');
-        new App();
+        app=new App();
         Backbone.history.start({ pushState : false });
     });
 	

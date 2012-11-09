@@ -2,7 +2,7 @@
  * Models
  */
 
-define(['jquery', 'backbone', 'backbone_ext'],function($, Backbone) {
+define(['jquery', 'backbone', /*'backbone_ext'*/],function() {
 	window.LoginModel=Backbone.Model.extend({
 		url: function() {
 			return Routing.generate('user_rest_api_v1_post_login');
@@ -11,8 +11,21 @@ define(['jquery', 'backbone', 'backbone_ext'],function($, Backbone) {
 			login: {
 				required: true
 			}
+		},
+		defaults: {
+			id: null,
+			login: 'demo',
+			password: 'demo'
 		}
 		
+	});
+	
+	window.NavBarModel=Backbone.Model.extend({
+		
+	});
+
+	window.NavBarListModel=Backbone.Collection.extend({
+		model: NavBarModel
 	});
 	
 	window.Pay=Backbone.Model.extend({

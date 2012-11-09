@@ -1,7 +1,7 @@
 /*
  * Base view for JQM 1.2.0
  */
-define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backbone.validation','base_view'],function($,Backbone,_) {
+define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backbone.validation','base_view','forms_ext'],function($,Backbone,_) {
 	BasicView=Backbone.View.extend({
 		id: "BasicView",
         role: "page",
@@ -61,6 +61,43 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 			if(this.options.backLink)
 		        $(this.el).append('<a href="'+this.options.backLink+' data-icon="delete">'+this.options.backText+'</a>');
 	        $(this.el).append('<h1>'+this.options.headerText+'</h1>');
+	        return this;
+		}
+	});
+	
+	NavBarView=Backbone.View.extend({
+		attributes : {
+			"data-role" : "navbar"
+		},
+		render: function() {
+	        $(this.el).append(new NavBarListView({model:this.model}).render().el);
+	        return this;
+		}
+	});
+
+	NavBarListView=Backbone.View.extend({
+	    tagName: "ul",
+		render: function() {
+	        var self=this;
+            _.each(self.model.models, function (item) {
+                $(self.el).append(new NavBarListItemView({
+                	model:item
+                	}).render().el);
+            }, self);
+                        
+            return this;
+		}
+	});
+
+	NavBarListItemView=Backbone.View.extend({
+	    tagName: "li",
+	    initialize:function () {
+	        this.template=_.template('<a href="<%= link %>"><%= text %></a>'),
+	        this.model.bind("change", this.render, this);
+	        this.model.bind("destroy", this.close, this);
+	    },
+		render: function() {
+	        $(this.el).html(this.template(this.model.toJSON()));
 	        return this;
 		}
 	});

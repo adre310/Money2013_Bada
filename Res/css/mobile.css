@@ -5,5 +5,5 @@
 }
 
 @media screen and (orientation: landscape){
-    .error  { display: inline-block; margin-left: 22%; }
+    .error { display: inline-block; margin-left: 22%; }
 }
