@@ -42,7 +42,7 @@ require(['jquery', 'backbone','underscore','model','views','jquery.mobile'], fun
 	
 	
     $(function () {
-    	Routing.setBaseUrl('https://172.26.10.23:9443/Money2013/web/app_dev.php');
+    	Routing.setBaseUrl('https://192.168.0.104/Money2013/web/app_dev.php');
         app=new App();
         Backbone.history.start({ pushState : false });
     });

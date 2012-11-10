@@ -10,7 +10,7 @@
 <link rel="stylesheet" href='./css/mobile.css' />
 
 <script type="text/javascript" src="./js/lib/router.js"></script>
-<script type="text/javascript" src="https://172.26.10.23:9443/Money2013/web/app_dev.php/js/routing?callback=fos.Router.setData"></script>
+<script type="text/javascript" src="https://192.168.0.104/Money2013/web/app_dev.php/js/routing?callback=fos.Router.setData"></script>
 
 <script src='./js/lib/require-2.1.1.min.js'></script>
 <script type="text/javascript">
@@ -31,6 +31,7 @@ requirejs.config({
         'views': './js/views/mobile_views',
         'forms_ext': './js/views/forms_ext',
         'backbone_ext': './js/backbone_ext',
+        'template': './js/views/tpl',
     },
     shim: {
         'jquery.mobile-config': ['jquery'],

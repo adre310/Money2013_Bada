@@ -1,7 +1,16 @@
 /*
  * Base view for JQM 1.2.0
  */
-define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backbone.validation','base_view','forms_ext'],function($,Backbone,_) {
+define(['jquery',
+        'backbone',
+        'underscore',
+        'jquery.mobile',
+        'backbone.forms',
+        'backbone.validation',
+        'base_view',
+        'forms_ext',
+        'template'], 
+  function($,Backbone,_) {
 	BasicView=Backbone.View.extend({
 		id: "BasicView",
         role: "page",
@@ -22,6 +31,18 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
         },
         
         render: function() {
+        	if(this.template_id) {
+        		var self=this;
+        		TemplateManager.get(this.template_id,function(template){
+        			self.template=template;
+        			self._render();
+        		});
+        	} else {
+        		this._render();
+        	}
+        },
+        
+        _render: function() {
             var $previousEl = $("#" + this.id);
             var alreadyInDom = $previousEl.length >= 0;
             if (alreadyInDom) {
@@ -182,16 +203,21 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	    tagName:"li",
 	    
 	    initialize:function () {
-	        this.template=_.template($('#'+this.options.template).html()),
 	        this.model.bind("change", this.render, this);
 	        this.model.bind("destroy", this.close, this);
 	    },
 
 	    render:function (eventName) {
-	        $(this.el).html(this.template(this.model.toJSON()));
-	        if(this.options.create) {
-	        	this.options.create($(this.el), this.model);
-	        }
+	    	var self=this;
+       		TemplateManager.get(this.options.template,function(template){
+    			self.template=template;
+    			self._render();
+    	        $(self.el).html(self.template(self.model.toJSON()));
+    	        if(self.options.create) {
+    	        	self.options.create($(self.el), self.model);
+    	        }
+    		});
+    	
 	        return this;
 	    }
 		

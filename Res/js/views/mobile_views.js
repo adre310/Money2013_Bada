@@ -92,27 +92,26 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	AccountListPageView=PageBasicView.extend({
 		id: 'AccountListPageView',
 		headerText : 'Account List',
+		template_id: 'account-page',
 
 	    initialize:function () {
 			console.log('AccountListPageView init');
 	    	this.navlist=new Backbone.Collection;
-	    	/*
-	    	this.navlist.on("add", function(item) {
-	    		  console.log("Add " + item.get("link") + "->"+item.get("text"));
-	    		});
-	    	*/
 	    	this.navlist.add([
 	    	   {link:'#account/new',text:'New Account'},
 	    	   {link:'#category/list',text:'Categories List'}
 	    	   ]);
+	    	AccountListPageView.__super__.initialize.apply(this);
+	    	/*
             _.bindAll();
             this.render();
+            */
 	    },	
 	    
 		renderContentView: function() {
 			console.log('AccountListPageView renderContentView');
 			$contentEl.append(new NavBarView({model:this.navlist}).render().el);
-	        $contentEl.append('<h1>Accounts</h1>');
+	        $contentEl.append(this.template(this.model.toJSON()));
 	        
 	        this.model.fetch({
 	        	success: function() {
@@ -122,8 +121,7 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	        		console.log('accounts loaded - error');
 	        	}
 	        });
-		}
-		
+		} 	    
 	});
 	
 });
