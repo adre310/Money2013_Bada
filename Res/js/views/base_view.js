@@ -59,7 +59,9 @@ define(['jquery',
                 changeHash : false,
                 role : this.role
             });            
-        }		
+        },
+        
+        _afterInit: function() {}
 	});
 
 	FooterView=Backbone.View.extend({
@@ -137,69 +139,60 @@ define(['jquery',
         		backText: this.backText,
         		headerText: this.headerText
         	}).render().el);
+        	if(this.navlist) {
+        		console.log('render NavBar')
+    			$(this.el).append(new NavBarView({model:this.navlist}).render().el);        		
+        	}
         	$(this.el).append('<div data-role="content"/>');
-        	$contentEl=$('div[data-role="content"]',this.el);
+        	this.contentEl=$('div[data-role="content"]',this.el);
         	this.renderContentView();
         	$(this.el).append(new FooterView().render().el);
         }		
 	});
 	
-	window.JQMListView = Backbone.View.extend({
-
+	JQMListView = Backbone.View.extend({
+		tagname: 'ul',
+		attributes: {
+			'data-role': 'listview'
+		},
+		
 		initialize: function () {
 	        this.model.bind("reset", this.render, this);
 	    },
 
 	    render: function (eventName) {
-	        $(this.el).empty();
-	        if(this.options.headerText) {
-	            $(this.el).append('<li data-role="list-divider">'+this.options.header+'</li>');        	
-	        };
-
-	        var self=this;
-	        
-	        this.loadCollection(function() {
-	            _.each(self.model.models, function (item) {
-	                $(self.el).append(new JQMListItemView({
-	                	model:item,
-	                	template:self.options.template,
-	                	create:self.options.create,
-	                	}).render().el);
-	            }, self);
-	            try {
-	                $(self.el).listview('refresh');            	
-	            } catch(excp) {
-	            	
-	            }
-	        });
-	        
 	        return this;
 	    },
-	    
-	    loadCollection: function(callback) {
-	    	if(this.model.length>0) {
-	    		console.log('JQMListView.loadCollection collection is not empty');
-	    		callback();
-	    	} else {
-	    		console.log('JQMListView.loadCollection collection is empty.');
-	    		if(!this.model.is_loading) {
-	    			this.model.is_loading=true;
-	    			this.model.fetch({
-	    				success: function() {
-	    		    		console.log('JQMListView.loadCollection fetch collection');
-	    					callback();
-	    				}
-	    			});
-	    		} else {
-	        		console.log('JQMListView.loadCollection collection is empty and fetching.');
-	    			callback();
-	    		}
+	    renderList: function() {
+	    	console.log('renderList');
+	    	var self=this;
+       		TemplateManager.get(this.options.template,function(template){
+       			$(self.el).empty();
+       			if(self.options.headerText) {
+       				$(self.el).append('<li data-role="list-divider">'+self.options.headerText+'</li>');        	
+       			};
+       			_.each(self.model.models, function (item) {
+       				$(self.el).append(
+       					new JQMListItemView({
+       						model:item,
+       						template:self.options.template,
+       						create:self.options.create
+       					}).render().el);
+       				}, self);
+       			self.refresh();
+       		});
+	    },	    
+	    refresh: function() {
+	    	try {
+	    		console.log('refresh list');
+	    		$(this.el).listview('refresh');
+	    	} catch(ex) {
+	    		console.log('refresh list - error');
 	    	}
 	    }
-		
 	});
 
-	window.JQMListItemView = Backbone.View.extend({
+	JQMListItemView = Backbone.View.extend({
 	    tagName:"li",
 	    
 	    initialize:function () {
@@ -211,7 +204,6 @@ define(['jquery',
 	    	var self=this;
        		TemplateManager.get(this.options.template,function(template){
     			self.template=template;
-    			self._render();
     	        $(self.el).html(self.template(self.model.toJSON()));
     	        if(self.options.create) {
     	        	self.options.create($(self.el), self.model);

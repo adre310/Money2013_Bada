@@ -2,7 +2,7 @@
 * Template manager
 */
 
-define(['jquery','backbone','underscore'],function() {
+define(['jquery','backbone','underscore','text'],function() {
 	window.JST={};
 	
 	TemplateManager = {
@@ -13,20 +13,13 @@ define(['jquery','backbone','underscore'],function() {
 				callback(window.JST[id]);
 			} else {
 				console.log('loading template: '+id);
-				$.ajax({
-					url: './templates/'+id+'.html',
-					type: 'GET',
-					dataType: 'html',
-					success: function(data, textStatus, jqXHR) {
-						console.log('get template: '+id+' success');
-						window.JST[id]=_.template(data);
-						callback(window.JST[id]);
-					},
-					error:  function(jqXHR, textStatus, errorThrown) {
-						console.log('get template: '+id+' error');
-					}					
+				require(['text!./templates/'+id+'.html'],function(template){
+					console.log('get template: '+id);
+					window.JST[id]=_.template(template);
+					callback(window.JST[id]);
 				});
 			}
 		}
+		
 	};
 });

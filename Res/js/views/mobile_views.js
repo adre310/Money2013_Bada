@@ -22,8 +22,8 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	        	}
 	        }).render();
 	        
-	        $contentEl.append(this.form.el);
-	        $contentEl.append('<button type="submit" data-theme="b" class="login">Login</button>');	
+	        this.contentEl.append(this.form.el);
+	        this.contentEl.append('<button type="submit" data-theme="b" class="login">Login</button>');	
 		},
 		
 		login: function() {
@@ -92,7 +92,6 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	AccountListPageView=PageBasicView.extend({
 		id: 'AccountListPageView',
 		headerText : 'Account List',
-		template_id: 'account-page',
 
 	    initialize:function () {
 			console.log('AccountListPageView init');
@@ -102,26 +101,34 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	    	   {link:'#category/list',text:'Categories List'}
 	    	   ]);
 	    	AccountListPageView.__super__.initialize.apply(this);
-	    	/*
-            _.bindAll();
-            this.render();
-            */
 	    },	
 	    
 		renderContentView: function() {
 			console.log('AccountListPageView renderContentView');
-			$contentEl.append(new NavBarView({model:this.navlist}).render().el);
-	        $contentEl.append(this.template(this.model.toJSON()));
 	        
+    		this.listView=new JQMListView({
+    			model:this.model,
+    			template:'account-list-item',
+    			headerText: 'Account List'
+    		});
+    		this.contentEl.append(this.listView.render().el);
+	        
+	        var self=this;
+	        	        
 	        this.model.fetch({
 	        	success: function() {
 	        		console.log('accounts loaded');
+	        		self.listView.renderList();
 	        	},
 	        	error: function() {
 	        		console.log('accounts loaded - error');
 	        	}
 	        });
-		} 	    
+		},
+        _afterInit: function() {
+    		this.listView.refresh();
+        }
+
 	});
 	
 });
