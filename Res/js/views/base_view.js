@@ -168,6 +168,11 @@ define(['jquery',
 	    },
 
 	    render: function (eventName) {
+	    	var self=this;
+   			$(self.el).empty();
+   			if(self.options.headerText) {
+   				$(self.el).append('<li data-role="list-divider">'+self.options.headerText+'</li>');        	
+   			};
 	        return this;
 	    },
 	    renderList: function() {

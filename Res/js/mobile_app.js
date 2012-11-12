@@ -8,6 +8,7 @@ require(['jquery',
          'underscore',
          'model',
          'views',
+         'my-utils',
          'jquery.mobile'], function($,Backbone,_) {
 	var App = Backbone.Router.extend({
 		isLogin : false,
@@ -23,7 +24,7 @@ require(['jquery',
 //			"account/:id/delete" : "AccountDelete",
 			
 			/* PAYS */
-//			"pay/:id": "PayEdit",
+			"pay/:id": "PayEdit",
 //			"pay/:id/new": "PayNew",
 //			"pay/:id/delete": "PayDelete",
 			
@@ -54,7 +55,27 @@ require(['jquery',
 					console.log('account.fetch('+id+') - error');
 				}
 			});
+		},
+		
+		PayEdit: function(id) {
+			var pay=new Pay({id:id});
+			pay.fetch({
+				success: function() {
+					console.log('pay.fetch('+id+') - success');
+					new PayEditPage({model:pay});
+				},
+				error: function() {
+					console.log('pay.fetch('+id+') - error');
+				}
+			});
+		},
+		
+		// Utils
+		getCategoriesList: function() {
+			var collection=new CategoriesList();
+			return collection;
 		}
+		
 	});
 	
 	

@@ -150,6 +150,76 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	    },	
 		renderContentView: function() {
 			this.contentEl.append(this.template(this.model.toJSON()));
+    		
+    		var self=this;
+    		this.paylist=new PayList();
+    		this.paylist.account_id=this.model.get('id');
+
+    		this.listView=new JQMListView({
+    			model:this.paylist,
+    			template:'pay-list-item',
+    			headerText: 'Payments List',
+            	create: function(el,model) {
+            		el.attr('data-theme', model.get('style'));        		
+            	}    			
+    		});    		
+    		this.contentEl.append(this.listView.render().el);
+    		
+    		this.paylist.fetch({
+	        	success: function() {
+	        		console.log('pays loaded');
+	        		self.listView.renderList();
+	        	},
+				error:  function() {
+	        		console.log('pays loaded - error');
+	        	}
+	        });
+		},
+        _afterInit: function() {
+    		this.listView.refresh();
+        }
+	});
+	
+	PayEditPage=PageBasicView.extend({
+		id: 'PayEditPage',
+		headerText: 'Edit Payment',
+
+		events: {
+			'click .save': 'save'
+		},
+
+		initialize: function () {
+			console.log('PayEditPage init ->');
+			
+			this.backLink='#account/'+this.model.get('account_id')+'/show';
+
+	    	this.navlist=new Backbone.Collection;
+	    	this.navlist.add([
+	    	   {link:'#pay/'+this.model.get('id')+'/delete',text:'Delete payment'}
+	    	   ]);
+	    	PayEditPage.__super__.initialize.apply(this);
+			console.log('PayEditPage init <-');
+	    },	
+		renderContentView: function() {
+			console.log('PayEditPage renderContentView ->');
+	    	Backbone.Validation.bind(this);
+	        this.form = new Backbone.Form({
+	        	model:this.model,
+	        	schema: {
+	        		pay_value:    { type: 'Text'},
+	        		pay_date:     { type: 'mobiscroll.Date'},
+	        		category_id:  { type: 'Select', options: app.getCategoriesList()},
+	        		notes:        { type: 'TextArea'}
+	        	}
+	        }).render();
+	        
+	        this.contentEl.append(this.form.el);
+	        this.contentEl.append('<button type="submit" data-theme="b" class="save">Save</button>');	
+			console.log('PayEditPage renderContentView <-');
+		},
+		
+		save: function() {
+			
 		}
-	});	
+	});
 });

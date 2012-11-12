@@ -19,17 +19,33 @@ define(['jquery', 'backbone', /*'backbone_ext'*/],function() {
 		}
 		
 	});
-	
-	window.NavBarModel=Backbone.Model.extend({
 		
+	/*
+	 * PAYS
+	 */
+	window.Pay=Backbone.Model.extend({
+		url: function() {
+			return this.isNew()?Routing.generate('rest_api_v1_post_pays'):Routing.generate('rest_api_v1_get_pay',{id:this.id});
+		},
+		defaults: {
+			id: null,
+			notes: '',
+			style: 'c',
+			account_id: 0
+		},
+		validation: {
+			pay_value: {
+				required: true,
+				pattern: 'number'
+			}
+		}
 	});
 
-	window.NavBarListModel=Backbone.Collection.extend({
-		model: NavBarModel
-	});
-	
-	window.Pay=Backbone.Model.extend({
-			
+	window.PayList=Backbone.Collection.extend({
+		url: function() {
+			return Routing.generate('rest_api_v1_get_accounts_pays',{id:this.account_id});
+		},
+		model: Pay
 	});
 	
 	/**
@@ -86,6 +102,34 @@ define(['jquery', 'backbone', /*'backbone_ext'*/],function() {
 			return Routing.generate('rest_api_v1_get_accounts');
 		},
 		model: Account
+	});
+
+	/**
+	 * CATEGORY
+	 */
+	window.Category=Backbone.Model.extend({
+		url: function() {
+			return this.isNew()?Routing.generate('rest_api_v1_post_category'):Routing.generate('rest_api_v1_get_category',{id:this.id});
+		},	
+		validation: {
+			name: {
+				required: true
+			}
+		},		
+		defaults: {
+			id: null,
+			name: ''
+		},
+		toString: function() {
+			return this.attributes.name;
+		}
+	});
+
+	window.CategoriesList=Backbone.Collection.extend({
+		url: function() {
+			return Routing.generate('rest_api_v1_get_categories');
+		},
+		model: Category
 	});
 	
 });
