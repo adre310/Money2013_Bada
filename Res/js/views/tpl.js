@@ -7,14 +7,14 @@ define(['jquery','backbone','underscore','text'],function() {
 	
 	TemplateManager = {
 		get: function(id, callback) {
-			console.log('get template: '+id);
+			//console.log('get template: '+id);
 			if(window.JST[id]) {
-				console.log('template: '+id+' found in JST');
+				//console.log('template: '+id+' found in JST');
 				callback(window.JST[id]);
 			} else {
-				console.log('loading template: '+id);
+				//console.log('loading template: '+id);
 				require(['text!./templates/'+id+'.html'],function(template){
-					console.log('get template: '+id);
+					//console.log('get template: '+id);
 					window.JST[id]=_.template(template);
 					callback(window.JST[id]);
 				});

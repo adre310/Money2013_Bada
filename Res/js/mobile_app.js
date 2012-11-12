@@ -3,7 +3,12 @@
  *
 */
 
-require(['jquery', 'backbone','underscore','model','views','jquery.mobile'], function($,Backbone,_) {
+require(['jquery',
+         'backbone',
+         'underscore',
+         'model',
+         'views',
+         'jquery.mobile'], function($,Backbone,_) {
 	var App = Backbone.Router.extend({
 		isLogin : false,
 		
@@ -12,7 +17,7 @@ require(['jquery', 'backbone','underscore','model','views','jquery.mobile'], fun
 			
 			/* ACCOUNTS */
 			"accounts" : "Accounts",
-//			"account/:id/show" : "AccountView",
+			"account/:id/show" : "AccountView",
 //			"account/new" : "AccountNew",
 //			"account/:id/edit" : "AccountEdit",
 //			"account/:id/delete" : "AccountDelete",
@@ -38,11 +43,23 @@ require(['jquery', 'backbone','underscore','model','views','jquery.mobile'], fun
 				new LoginPageView({model:loginModel});				
 			}
 		},
+		AccountView: function(id) {
+			var account=new Account({id:id});
+			account.fetch({
+				success: function() {
+					console.log('account.fetch('+id+') - success');
+					new AccountPageView({model:account});
+				},
+				error: function() {
+					console.log('account.fetch('+id+') - error');
+				}
+			});
+		}
 	});
 	
 	
     $(function () {
-    	Routing.setBaseUrl('https://192.168.0.104/Money2013/web/app_dev.php');
+    	Routing.setBaseUrl('https://172.26.10.23:9443/Money2013/web/app_dev.php');
         app=new App();
         Backbone.history.start({ pushState : false });
     });

@@ -79,12 +79,20 @@ define(['jquery',
 		attributes : {
 			"data-role" : "header"
 		},
-		
+
+		events: {
+			"click .back": "back"
+		},
+				
 		render: function() {
 			if(this.options.backLink)
-		        $(this.el).append('<a href="'+this.options.backLink+' data-icon="delete">'+this.options.backText+'</a>');
+		        $(this.el).append('<a class="back" data-icon="delete">Back</a>');
 	        $(this.el).append('<h1>'+this.options.headerText+'</h1>');
 	        return this;
+		},
+		
+		back: function() {
+			app.navigate(this.options.backLink,{replace:true, trigger:true});			
 		}
 	});
 	
@@ -126,7 +134,6 @@ define(['jquery',
 	});
 	
 	PageBasicView=BasicView.extend({
-		backLink: null,
 		headerText : 'Page Header',
 				
 		renderContentView: function() {

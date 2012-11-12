@@ -1374,7 +1374,7 @@
   Backbone.wrapError = function(onError, originalModel, options) {
 	console.log('Backbone.wrapError');
     return function(model, resp) {
-      console.log('Backbone.wrapError.function');
+      console.log('Backbone.wrapError.function - '+resp);
       resp = model === originalModel ? resp : model;
       if (onError) {
         onError(originalModel, resp, options);

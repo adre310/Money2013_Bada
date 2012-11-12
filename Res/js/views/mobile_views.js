@@ -108,8 +108,8 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	        
     		this.listView=new JQMListView({
     			model:this.model,
-    			template:'account-list-item',
-    			headerText: 'Account List'
+    			template:'account-list-item'
+    			//headerText: 'Account List'
     		});
     		this.contentEl.append(this.listView.render().el);
 	        
@@ -120,7 +120,7 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	        		console.log('accounts loaded');
 	        		self.listView.renderList();
 	        	},
-	        	error: function() {
+				error:  function() {
 	        		console.log('accounts loaded - error');
 	        	}
 	        });
@@ -128,7 +128,28 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
         _afterInit: function() {
     		this.listView.refresh();
         }
-
 	});
 	
+	AccountPageView=PageBasicView.extend({
+		id: 'AccountPageView',
+		template_id: 'account-view-page',
+		backLink: '#accounts',
+
+		initialize: function () {
+			console.log('AccountPageView init');
+			
+			this.headerText='Account '+this.model.get('name');
+
+	    	this.navlist=new Backbone.Collection;
+	    	this.navlist.add([
+	    	   {link:'#pay/'+this.model.get('id')+'/new',text:'New Payment'},
+	    	   {link:'#account/'+this.model.get('id')+'/edit',text:'Edit Account'},
+	    	   {link:'#account/'+this.model.get('id')+'/delete',text:'Delete Account'}
+	    	   ]);
+	    	AccountPageView.__super__.initialize.apply(this);
+	    },	
+		renderContentView: function() {
+			this.contentEl.append(this.template(this.model.toJSON()));
+		}
+	});	
 });
