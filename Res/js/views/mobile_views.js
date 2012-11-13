@@ -208,7 +208,7 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	        	schema: {
 	        		pay_value:    { type: 'Text'},
 	        		pay_date:     { type: 'mobiscroll.Date'},
-	        		category_id:  { type: 'Select', options: app.getCategoriesList()},
+	        		category_id:  { type: 'jqm.select', options: app.getCategoriesList()},
 	        		notes:        { type: 'TextArea'}
 	        	}
 	        }).render();
@@ -219,7 +219,14 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 		},
 		
 		save: function() {
-			
+			if(!this.form.commit()) {
+				var self_model=this.model;
+				this.model.save(null, {
+					success:function(){
+						console.log('save success');
+						app.navigate('account/'+self_model.get('account_id')+'/show',{replace:true, trigger:true});
+					}});
+			}
 		}
 	});
 });

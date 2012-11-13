@@ -57,7 +57,8 @@ define(['jquery',
             $.mobile.changePage("#" + this.id, {
                 reverse : false,
                 changeHash : false,
-                role : this.role
+                role : this.role,
+                transition: 'none'
             });            
         },
         

@@ -1366,6 +1366,7 @@
       params.processData = false;
     }
 
+    console.log('Backbone.sync('+method+') '+params.type+' '+params.url);
     // Make the request, allowing the user to override any Ajax options.
     return $.ajax(_.extend(params, options));
   };

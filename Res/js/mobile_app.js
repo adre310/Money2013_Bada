@@ -35,7 +35,6 @@ require(['jquery',
 		},
 
 		Accounts: function() {
-			console.log('Accounts');
 			if(this.isLogin) {
 				var accountList=new AccountList();
 				new AccountListPageView({model:accountList});
