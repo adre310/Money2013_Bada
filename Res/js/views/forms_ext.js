@@ -58,7 +58,7 @@ define(['jquery',
       $el.html('<input style="display:none">');
 
       var input = $('input', $el);
-      console.log('editor 5');
+      //console.log('editor 5');
 
       input.scroller({ 
     	  preset: 'date',        

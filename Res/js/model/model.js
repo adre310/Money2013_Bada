@@ -22,17 +22,68 @@ define(['jquery', 'backbone', /*'backbone_ext'*/],function() {
 	window.API={};
 	
 	window.API.BaseModel=Backbone.Model.extend({
+	    save: function(key, value, options) {
+	        console.log('save');
+	        var attrs, current;
+
+	        // Handle both `("key", value)` and `({key: value})` -style calls.
+	        if (_.isObject(key) || key == null) {
+	          attrs = key;
+	          options = value;
+	        } else {
+	          attrs = {};
+	          attrs[key] = value;
+	        }
+	        options = options ? _.clone(options) : {};
+	        var method = this.isNew() ? 'create' : 'update';
+
+	        return this.sync(method, this, options);
+	    },
+	    destroy: function(options) {
+	        options = options ? _.clone(options) : {};
+
+	        return this.sync('delete', this, options);
+	    },
 		sync: function(method, model, options) {
 			console.log('BaseModel.sync('+method+')');
 			if(method=='read') {
 				options.url=Routing.generate(this.readUrl,{id:this.id});
 				return Backbone.sync('read',model,options);
-			} else if(method == 'create' || method == 'update') {
-				options.url=Routing.generate(this.updateUrl);
-				return Backbone.sync('create',model,options);
-			} else if(method=='delete') {
-				options.url=Routing.generate(this.deleteUrl);
-				return Backbone.sync('create',model,options);
+			} else {
+				var url=null;
+				if(method == 'create' || method == 'update') {
+					url=Routing.generate(this.updateUrl);
+				} else if(method=='delete') {
+					url=Routing.generate(this.deleteUrl);
+				}
+				
+			    var fn_success = options.success;
+			    var fn_error = options.error;
+				
+				console.log('API.BaseModel url: '+url);
+				return $.ajax({
+					url : url,
+					type: 'POST',
+					dataType: 'json',
+					data: JSON.stringify(this.toJSON()),
+					success: function(data, textStatus, jqXHR) {
+						console.log('API.BaseModel sync success');
+						if(data.success) {
+							console.log('return - success');
+							if(fn_success)
+								fn_success();
+						} else {
+							console.log('return - error: '+data.error);
+							if(fn_error)
+								fn_error(data.error);
+						}
+					}, 
+					error:  function(jqXHR, textStatus, errorThrown) {
+						console.log('API.BaseModel sync error - '+textStatus);
+						if(fn_error)
+							fn_error('error');
+					}
+				});
 			}
 		}
 	});
@@ -43,7 +94,7 @@ define(['jquery', 'backbone', /*'backbone_ext'*/],function() {
 	window.Pay=API.BaseModel.extend({
 		readUrl: 'rest_api_v1_get_pay',
 		updateUrl: 'rest_api_v1_post_pay_update',
-		deleteUrl: 'rest_api_v1_post_delete',
+		deleteUrl: 'rest_api_v1_post_pay_delete',
 		defaults: {
 			id: null,
 			notes: '',
@@ -68,10 +119,10 @@ define(['jquery', 'backbone', /*'backbone_ext'*/],function() {
 	/**
 	 * ACCOUNTS
 	 */
-	window.Account=Backbone.Model.extend({
-		url: function() {
-			return this.isNew()?Routing.generate('rest_api_v1_post_account'):Routing.generate('rest_api_v1_get_account',{id:this.id});
-		},
+	window.Account=API.BaseModel.extend({
+		readUrl: 'rest_api_v1_get_account',
+		updateUrl: 'rest_api_v1_post_account_update',
+		deleteUrl: 'rest_api_v1_post_account_delete',
 		
 		validation: {
 			name: {
@@ -82,33 +133,9 @@ define(['jquery', 'backbone', /*'backbone_ext'*/],function() {
 		defaults: {
 			id: null,
 			name: '',
-			notes: '',
-			balance: '123'
+			notes: ''
 		},
-		
-		getPayList: function() {
-			if(this.pay_list && this.pay_list.length>0) {
-				return this.pay_list; 
-			} else {
-	            this.pay_list = new PayList();
-	            this.pay_list.account_id=this.id;
-				return this.pay_list;			
-			}			
-		},
-		
-		loadPays: function(callback) {
-	        if (this.pay_list) {
-	            if (callback) callback();
-	        } else {
-	            this.pay_list = new PayList();
-	            this.pay_list.account_id=this.id;
-	            this.pay_list.fetch({success:function () {
-	                if (callback) callback();
-	            }});
-	        }		
-			
-		},
-		
+				
 		toString: function() {
 			return this.attributes.name;
 		}
@@ -124,10 +151,10 @@ define(['jquery', 'backbone', /*'backbone_ext'*/],function() {
 	/**
 	 * CATEGORY
 	 */
-	window.Category=Backbone.Model.extend({
-		url: function() {
-			return this.isNew()?Routing.generate('rest_api_v1_post_category'):Routing.generate('rest_api_v1_get_category',{id:this.id});
-		},	
+	window.Category=API.BaseModel.extend({
+		readUrl: 'rest_api_v1_get_category',
+		updateUrl: 'rest_api_v1_post_category_update',
+		deleteUrl: 'rest_api_v1_post_category_delete',	
 		validation: {
 			name: {
 				required: true

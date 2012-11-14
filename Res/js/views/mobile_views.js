@@ -189,7 +189,7 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 		},
 
 		initialize: function () {
-			console.log('PayEditPage init ->');
+			//console.log('PayEditPage init ->');
 			
 			this.backLink='#account/'+this.model.get('account_id')+'/show';
 
@@ -198,10 +198,10 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	    	   {link:'#pay/'+this.model.get('id')+'/delete',text:'Delete payment'}
 	    	   ]);
 	    	PayEditPage.__super__.initialize.apply(this);
-			console.log('PayEditPage init <-');
+			//console.log('PayEditPage init <-');
 	    },	
 		renderContentView: function() {
-			console.log('PayEditPage renderContentView ->');
+			//console.log('PayEditPage renderContentView ->');
 	    	Backbone.Validation.bind(this);
 	        this.form = new Backbone.Form({
 	        	model:this.model,
@@ -215,17 +215,37 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	        
 	        this.contentEl.append(this.form.el);
 	        this.contentEl.append('<button type="submit" data-theme="b" class="save">Save</button>');	
-			console.log('PayEditPage renderContentView <-');
+			//console.log('PayEditPage renderContentView <-');
 		},
 		
 		save: function() {
 			if(!this.form.commit()) {
-				var self_model=this.model;
+				var self=this;
+				// This configurable timeout allows cached pages a brief delay to load without showing a message
+				var loadMsgDelay = setTimeout(function() {
+						$.mobile.showPageLoadingMsg();
+					}, 1500 ),
+
+				// Shared logic for clearing timeout and removing message.
+				hideMsg = function() {
+						clearTimeout( loadMsgDelay );
+						$.mobile.hidePageLoadingMsg();
+				};
+				
 				this.model.save(null, {
 					success:function(){
 						console.log('save success');
-						app.navigate('account/'+self_model.get('account_id')+'/show',{replace:true, trigger:true});
-					}});
+						hideMsg();
+						
+						app.navigate(self.backLink,{replace:true, trigger:true});
+					},
+					error: function(reason) {
+						console.log(reason);
+						// Remove loading message.
+						hideMsg();
+						$.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, reason, true );
+						setTimeout( $.mobile.hidePageLoadingMsg, 3000 );
+				}});
 			}
 		}
 	});

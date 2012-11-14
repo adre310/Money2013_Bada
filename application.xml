@@ -10,18 +10,18 @@
     <Icons>
         <MainMenu>Money2013_type4.png<Type1/>
             <Type2/>
-            <Type3>Money2013_type3.png</Type3>
-            <Type4>Money2013_type4.png</Type4>
-            <Type5>Money2013_type5.png</Type5>
+            <Type3>icon.png</Type3>
+            <Type4>icon.png</Type4>
+            <Type5>icon.png</Type5>
         </MainMenu>
         <Setting/>
         <Ticker/>
         <QuickPanel/>
         <LaunchImage>Splash_type4.png<Type1/>
             <Type2/>
-            <Type3>Splash_type3.png</Type3>
-            <Type4>Splash_type4.png</Type4>
-            <Type5>Splash_type5.png</Type5>
+            <Type3>splash.png</Type3>
+            <Type4>splash.png</Type4>
+            <Type5>splash.png</Type5>
         </LaunchImage>
     </Icons>
     <AutoScaling>
