@@ -19,14 +19,31 @@ define(['jquery', 'backbone', /*'backbone_ext'*/],function() {
 		}
 		
 	});
-		
+	window.API={};
+	
+	window.API.BaseModel=Backbone.Model.extend({
+		sync: function(method, model, options) {
+			console.log('BaseModel.sync('+method+')');
+			if(method=='read') {
+				options.url=Routing.generate(this.readUrl,{id:this.id});
+				return Backbone.sync('read',model,options);
+			} else if(method == 'create' || method == 'update') {
+				options.url=Routing.generate(this.updateUrl);
+				return Backbone.sync('create',model,options);
+			} else if(method=='delete') {
+				options.url=Routing.generate(this.deleteUrl);
+				return Backbone.sync('create',model,options);
+			}
+		}
+	});
+	
 	/*
 	 * PAYS
 	 */
-	window.Pay=Backbone.Model.extend({
-		url: function() {
-			return this.isNew()?Routing.generate('rest_api_v1_post_pays'):Routing.generate('rest_api_v1_get_pay',{id:this.id});
-		},
+	window.Pay=API.BaseModel.extend({
+		readUrl: 'rest_api_v1_get_pay',
+		updateUrl: 'rest_api_v1_post_pay_update',
+		deleteUrl: 'rest_api_v1_post_delete',
 		defaults: {
 			id: null,
 			notes: '',

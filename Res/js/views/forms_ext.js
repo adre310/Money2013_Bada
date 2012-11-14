@@ -8,7 +8,7 @@ define(['jquery',
         'jquery.mobile',
         'backbone.forms',
         'mobiscroll',
-        'mobiscroll-datetime'],function() {
+        /*'mobiscroll-datetime'*/],function() {
 	  var Form = Backbone.Form,
       Base = Form.editors.Base,
       createTemplate = Form.helpers.createTemplate,
