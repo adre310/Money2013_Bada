@@ -11,6 +11,8 @@
 
 <script type="text/javascript" src="./js/lib/router.js"></script>
 <script type="text/javascript" src="https://172.26.10.23:9443/Money2013/web/app_dev.php/js/routing?callback=fos.Router.setData"></script>
+<script type="text/javascript" src="./js/locale.js"></script>
+<script type="text/javascript" src="https://172.26.10.23:9443/Money2013/web/app_dev.php/v1/translation?callback=Translation.setData"></script>
 
 <script src='./js/lib/require-2.1.1.min.js'></script>
 <script type="text/javascript">
@@ -33,7 +35,6 @@ requirejs.config({
         'base_view': './js/views/base_view',
         'views': './js/views/mobile_views',
         'forms_ext': './js/views/forms_ext',
-        'backbone_ext': './js/backbone_ext',
         'template': './js/views/tpl',
     },
     shim: {

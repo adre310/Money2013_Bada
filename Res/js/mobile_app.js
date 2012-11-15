@@ -25,7 +25,7 @@ require(['jquery',
 			
 			/* PAYS */
 			"pay/:id": "PayEdit",
-//			"pay/:id/new": "PayNew",
+			"pay/:id/new": "PayNew",
 //			"pay/:id/delete": "PayDelete",
 			
 			/* Categories */
@@ -67,6 +67,11 @@ require(['jquery',
 					console.log('pay.fetch('+id+') - error');
 				}
 			});
+		},
+		
+		PayNew: function(id) {
+			var pay=new Pay({account_id:id});
+			new PayEditPage({model:pay});
 		},
 		
 		// Utils

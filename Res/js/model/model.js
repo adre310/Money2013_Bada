@@ -2,25 +2,12 @@
  * Models
  */
 
-define(['jquery', 'backbone', /*'backbone_ext'*/],function() {
-	window.LoginModel=Backbone.Model.extend({
-		url: function() {
-			return Routing.generate('user_rest_api_v1_post_login');
-		},
-		validation: {
-			login: {
-				required: true
-			}
-		},
-		defaults: {
-			id: null,
-			login: 'demo',
-			password: 'demo'
-		}
-		
-	});
-	window.API={};
+define(['jquery', 
+        'backbone'],function() {
+
 	
+	
+	window.API={};	
 	window.API.BaseModel=Backbone.Model.extend({
 	    save: function(key, value, options) {
 	        console.log('save');
@@ -102,10 +89,14 @@ define(['jquery', 'backbone', /*'backbone_ext'*/],function() {
 			account_id: 0
 		},
 		validation: {
-			pay_value: {
+			pay_value: [{
 				required: true,
-				pattern: 'number'
-			}
+				msg: Translation.get('validate.required')				
+			}, 
+			{
+				pattern: 'number',
+				msg: Translation.get('validate.number')				
+			}]
 		}
 	});
 

@@ -2,11 +2,36 @@
 *  Mobile Views 
 */
 
-define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backbone.validation','base_view','forms_ext'],function() {
+define(['jquery',
+        'backbone',
+        'underscore',
+        'jquery.mobile',
+        'backbone.forms',
+        'backbone.validation',
+        'base_view',
+        'forms_ext'],function() {
+	
+	LoginModel=Backbone.Model.extend({
+		url: function() {
+			return Routing.generate('user_rest_api_v1_post_login');
+		},
+		validation: {
+			login: {
+				required: true,
+				msg: Translation.get('validate.required')				
+			}
+		},
+		defaults: {
+			id: null,
+			login: 'demo',
+			password: 'demo'
+		}
+		
+	});
 
 	LoginPageView=PageBasicView.extend({
 		id: 'LoginPageView',
-		headerText : 'Login',
+		headerText : Translation.get('layout.login'),
 
 		events: {
 			"click .login": "login"
@@ -17,13 +42,13 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	        this.form = new Backbone.Form({
 	        	model:this.model,
 	        	schema: {
-	        		login:    { type: 'Text'},
-	        		password: { type: 'Password'}
+	        		login:    { type: 'Text', title: Translation.get('form.username')},
+	        		password: { type: 'Password', title: Translation.get('form.password')}
 	        	}
 	        }).render();
 	        
 	        this.contentEl.append(this.form.el);
-	        this.contentEl.append('<button type="submit" data-theme="b" class="login">Login</button>');	
+	        this.contentEl.append('<button type="submit" data-theme="b" class="login">'+Translation.get('security.login.submit')+'</button>');	
 		},
 		
 		login: function() {
@@ -91,14 +116,13 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	
 	AccountListPageView=PageBasicView.extend({
 		id: 'AccountListPageView',
-		headerText : 'Account List',
+		headerText : Translation.get('account.list'),
 
 	    initialize:function () {
-			console.log('AccountListPageView init');
 	    	this.navlist=new Backbone.Collection;
 	    	this.navlist.add([
-	    	   {link:'#account/new',text:'New Account'},
-	    	   {link:'#category/list',text:'Categories List'}
+	    	   {link:'#account/new',text:Translation.get('account.create')},
+	    	   {link:'#category/list',text:Translation.get('category.list')}
 	    	   ]);
 	    	AccountListPageView.__super__.initialize.apply(this);
 	    },	
@@ -138,13 +162,13 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 		initialize: function () {
 			console.log('AccountPageView init');
 			
-			this.headerText='Account '+this.model.get('name');
+			this.headerText=Translation.get('account.title')+' '+this.model.get('name');
 
 	    	this.navlist=new Backbone.Collection;
 	    	this.navlist.add([
-	    	   {link:'#pay/'+this.model.get('id')+'/new',text:'New Payment'},
-	    	   {link:'#account/'+this.model.get('id')+'/edit',text:'Edit Account'},
-	    	   {link:'#account/'+this.model.get('id')+'/delete',text:'Delete Account'}
+	    	   {link:'#pay/'+this.model.get('id')+'/new',text:Translation.get('pay.create')},
+	    	   {link:'#account/'+this.model.get('id')+'/edit',text:Translation.get('account.edit')},
+	    	   {link:'#account/'+this.model.get('id')+'/delete',text:Translation.get('account.delete')}
 	    	   ]);
 	    	AccountPageView.__super__.initialize.apply(this);
 	    },	
@@ -158,7 +182,7 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
     		this.listView=new JQMListView({
     			model:this.paylist,
     			template:'pay-list-item',
-    			headerText: 'Payments List',
+    			headerText: Translation.get('pay.list'),
             	create: function(el,model) {
             		el.attr('data-theme', model.get('style'));        		
             	}    			
@@ -182,7 +206,7 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	
 	PayEditPage=PageBasicView.extend({
 		id: 'PayEditPage',
-		headerText: 'Edit Payment',
+		headerText: Translation.get('pay.edit'),
 
 		events: {
 			'click .save': 'save'
@@ -191,11 +215,12 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 		initialize: function () {
 			//console.log('PayEditPage init ->');
 			
+			this.headerText=this.model.isNew()?Translation.get('pay.create'):Translation.get('pay.edit');
 			this.backLink='#account/'+this.model.get('account_id')+'/show';
 
 	    	this.navlist=new Backbone.Collection;
 	    	this.navlist.add([
-	    	   {link:'#pay/'+this.model.get('id')+'/delete',text:'Delete payment'}
+	    	   {link:'#pay/'+this.model.get('id')+'/delete',text:Translation.get('pay.delete')}
 	    	   ]);
 	    	PayEditPage.__super__.initialize.apply(this);
 			//console.log('PayEditPage init <-');
@@ -206,15 +231,15 @@ define(['jquery','backbone','underscore','jquery.mobile','backbone.forms','backb
 	        this.form = new Backbone.Form({
 	        	model:this.model,
 	        	schema: {
-	        		pay_value:    { type: 'Text'},
-	        		pay_date:     { type: 'mobiscroll.Date'},
-	        		category_id:  { type: 'jqm.select', options: app.getCategoriesList()},
-	        		notes:        { type: 'TextArea'}
+	        		pay_value:    { type: 'Text',title:Translation.get('pay.payvalue')},
+	        		pay_date:     { type: 'mobiscroll.Date',title:Translation.get('pay.paydate')},
+	        		category_id:  { type: 'jqm.select', options: app.getCategoriesList(),title:Translation.get('pay.category')},
+	        		notes:        { type: 'TextArea',title:Translation.get('generic.notes')}
 	        	}
 	        }).render();
 	        
 	        this.contentEl.append(this.form.el);
-	        this.contentEl.append('<button type="submit" data-theme="b" class="save">Save</button>');	
+	        this.contentEl.append('<button type="submit" data-theme="b" class="save">'+Translation.get('generic.save')+'</button>');	
 			//console.log('PayEditPage renderContentView <-');
 		},
 		

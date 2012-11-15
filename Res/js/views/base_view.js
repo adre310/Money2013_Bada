@@ -148,7 +148,7 @@ define(['jquery',
         		headerText: this.headerText
         	}).render().el);
         	if(this.navlist) {
-        		console.log('render NavBar')
+        		//console.log('render NavBar')
     			$(this.el).append(new NavBarView({model:this.navlist}).render().el);        		
         	}
         	$(this.el).append('<div data-role="content"/>');
@@ -177,7 +177,7 @@ define(['jquery',
 	        return this;
 	    },
 	    renderList: function() {
-	    	console.log('renderList');
+	    	//console.log('renderList');
 	    	var self=this;
        		TemplateManager.get(this.options.template,function(template){
        			$(self.el).empty();
@@ -197,7 +197,7 @@ define(['jquery',
 	    },	    
 	    refresh: function() {
 	    	try {
-	    		console.log('refresh list');
+	    		//console.log('refresh list');
 	    		$(this.el).listview('refresh');
 	    	} catch(ex) {
 	    		console.log('refresh list - error');
