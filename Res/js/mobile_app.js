@@ -19,8 +19,8 @@ require(['jquery',
 			/* ACCOUNTS */
 			"accounts" : "Accounts",
 			"account/:id/show" : "AccountView",
-//			"account/new" : "AccountNew",
-//			"account/:id/edit" : "AccountEdit",
+			"account/new" : "AccountNew",
+			"account/:id/edit" : "AccountEdit",
 //			"account/:id/delete" : "AccountDelete",
 			
 			/* PAYS */
@@ -55,6 +55,22 @@ require(['jquery',
 				}
 			});
 		},
+		AccountEdit: function(id) {
+			var account=new Account({id:id});
+			account.fetch({
+				success: function() {
+					console.log('account.fetch('+id+') - success');
+					new AccountEditPage({model:account});
+				},
+				error: function() {
+					console.log('account.fetch('+id+') - error');
+				}
+			});			
+		},
+		AccountNew: function() {
+			var account=new Account();
+			new AccountNewPage({model:account});
+		},
 		
 		PayEdit: function(id) {
 			var pay=new Pay({id:id});
@@ -77,6 +93,11 @@ require(['jquery',
 		// Utils
 		getCategoriesList: function() {
 			var collection=new CategoriesList();
+			return collection;
+		},
+		
+		getCurrencyCodes: function() {
+			var collection=new CurrencyCodesList();
 			return collection;
 		}
 		

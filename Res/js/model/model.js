@@ -4,9 +4,7 @@
 
 define(['jquery', 
         'backbone'],function() {
-
-	
-	
+		
 	window.API={};	
 	window.API.BaseModel=Backbone.Model.extend({
 	    save: function(key, value, options) {
@@ -117,7 +115,8 @@ define(['jquery',
 		
 		validation: {
 			name: {
-				required: true
+				required: true,
+				msg: Translation.get('validate.required')				
 			}
 		},
 		
@@ -167,4 +166,19 @@ define(['jquery',
 		model: Category
 	});
 	
+	/*
+	 * Currency Code
+	 */
+	window.CurrencyCode=Backbone.Model.extend({
+		toString: function() {
+			return this.attributes.name;
+		}
+	});
+	
+	window.CurrencyCodesList=Backbone.Collection.extend({
+		url: function() {
+			return Routing.generate('rest_api_v1_get_currency_codes');
+		},
+		model: CurrencyCode
+	});
 });

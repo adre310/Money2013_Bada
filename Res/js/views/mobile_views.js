@@ -204,13 +204,8 @@ define(['jquery',
         }
 	});
 	
-	PayEditPage=PageBasicView.extend({
+	PayEditPage=FormBasicView.extend({
 		id: 'PayEditPage',
-		headerText: Translation.get('pay.edit'),
-
-		events: {
-			'click .save': 'save'
-		},
 
 		initialize: function () {
 			//console.log('PayEditPage init ->');
@@ -224,11 +219,10 @@ define(['jquery',
 	    	   ]);
 	    	PayEditPage.__super__.initialize.apply(this);
 			//console.log('PayEditPage init <-');
-	    },	
-		renderContentView: function() {
-			//console.log('PayEditPage renderContentView ->');
-	    	Backbone.Validation.bind(this);
-	        this.form = new Backbone.Form({
+	    },
+	    
+		createForm: function() {
+			return new Backbone.Form({
 	        	model:this.model,
 	        	schema: {
 	        		pay_value:    { type: 'Text',title:Translation.get('pay.payvalue')},
@@ -236,42 +230,53 @@ define(['jquery',
 	        		category_id:  { type: 'jqm.select', options: app.getCategoriesList(),title:Translation.get('pay.category')},
 	        		notes:        { type: 'TextArea',title:Translation.get('generic.notes')}
 	        	}
-	        }).render();
-	        
-	        this.contentEl.append(this.form.el);
-	        this.contentEl.append('<button type="submit" data-theme="b" class="save">'+Translation.get('generic.save')+'</button>');	
-			//console.log('PayEditPage renderContentView <-');
-		},
-		
-		save: function() {
-			if(!this.form.commit()) {
-				var self=this;
-				// This configurable timeout allows cached pages a brief delay to load without showing a message
-				var loadMsgDelay = setTimeout(function() {
-						$.mobile.showPageLoadingMsg();
-					}, 1500 ),
+	        });
+		}	    
+	});
+	
+	AccountEditPage=FormBasicView.extend({
+		id: 'AccountEditPage',
+		headerText: Translation.get('account.edit'),
 
-				// Shared logic for clearing timeout and removing message.
-				hideMsg = function() {
-						clearTimeout( loadMsgDelay );
-						$.mobile.hidePageLoadingMsg();
-				};
-				
-				this.model.save(null, {
-					success:function(){
-						console.log('save success');
-						hideMsg();
-						
-						app.navigate(self.backLink,{replace:true, trigger:true});
-					},
-					error: function(reason) {
-						console.log(reason);
-						// Remove loading message.
-						hideMsg();
-						$.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, reason, true );
-						setTimeout( $.mobile.hidePageLoadingMsg, 3000 );
-				}});
-			}
-		}
+		initialize: function () {
+			//console.log('PayEditPage init ->');
+			
+			this.backLink='#account/'+this.model.get('id')+'/show';
+
+	    	this.navlist=new Backbone.Collection;
+	    	this.navlist.add([
+	    	   {link:'#account/'+this.model.get('id')+'/delete',text:Translation.get('account.delete')}
+	    	   ]);
+	    	AccountEditPage.__super__.initialize.apply(this);
+			//console.log('PayEditPage init <-');
+	    },
+	    
+		createForm: function() {
+			return new Backbone.Form({
+	        	model:this.model,
+	        	schema: {
+	        		name:     { type: 'Text',title:Translation.get('account.name')},
+	        		currency: { type: 'jqm.select', options: app.getCurrencyCodes(),title:Translation.get('account.currency')},
+	        		notes:    { type: 'TextArea',title:Translation.get('generic.notes')}
+	        	}
+	        });
+		}	    
+	});
+	
+	AccountNewPage=FormBasicView.extend({
+		id: 'AccountNewPage',
+		headerText: Translation.get('account.new'),
+		backLink: '#accounts',
+	    
+		createForm: function() {
+			return new Backbone.Form({
+	        	model:this.model,
+	        	schema: {
+	        		name:     { type: 'Text',title:Translation.get('account.name')},
+	        		currency: { type: 'jqm.select', options: app.getCurrencyCodes(),title:Translation.get('account.currency')},
+	        		notes:    { type: 'TextArea',title:Translation.get('generic.notes')}
+	        	}
+	        });
+		}	    
 	});
 });

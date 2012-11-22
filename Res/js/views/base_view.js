@@ -134,11 +134,62 @@ define(['jquery',
 		}
 	});
 	
+	DialogHeaderView=Backbone.View.extend({
+		attributes : {
+			"data-role" : "header",
+			"data-theme": "c"
+		},
+				
+		render: function() {
+	        $(this.el).append('<h1>'+this.options.headerText+'</h1>');
+	        return this;
+		}
+	});
+	
+	DialogView=BasicView.extend({
+        role: "dialog",
+		headerText : 'Dialog Header',
+		
+		renderContentView: function() {
+		},
+		
+        renderBasicView: function() {
+        	$(this.el).append(new DialogHeaderView({
+        		headerText: this.headerText
+        	}).render().el);
+        	$(this.el).append('<div data-role="content"/>');
+        	this.contentEl=$('div[data-role="content"]',this.el);
+        	this.renderContentView();
+        },
+        
+        _render: function() {
+            var $previousEl = $("#" + this.id);
+            var alreadyInDom = $previousEl.length >= 0;
+            if (alreadyInDom) {
+                $previousEl.remove();
+            };
+        
+            this.renderBasicView();
+            
+            $("body").append($(this.el));
+            $("#" + this.id).dialog();
+            $('[data-icon="delete"]',$(this.el)).hide();
+
+            $.mobile.changePage("#" + this.id, {
+                reverse : false,
+                changeHash : false,
+                role : this.role,
+                transition: 'none'
+            });
+            
+        }
+        
+	});
+	
 	PageBasicView=BasicView.extend({
 		headerText : 'Page Header',
 				
 		renderContentView: function() {
-			$contentEl.append('<h1>Content</h1>');
 		},
 		
         renderBasicView: function() {
@@ -156,6 +207,57 @@ define(['jquery',
         	this.renderContentView();
         	$(this.el).append(new FooterView().render().el);
         }		
+	});
+	
+	FormBasicView=PageBasicView.extend({
+		events: {
+			'click .save': 'save'
+		},
+		
+		createForm: function() {
+			
+		},
+		
+		renderContentView: function() {
+	    	Backbone.Validation.bind(this);
+
+	    	this.form=this.createForm();
+
+	    	this.contentEl.append(this.form.render().el);
+	        this.contentEl.append('<button type="submit" data-theme="b" class="save">'+Translation.get('generic.save')+'</button>');		    	
+		},
+		
+		save: function() {
+			if(!this.form.commit()) {
+				var self=this;
+				// This configurable timeout allows cached pages a brief delay to load without showing a message
+				var loadMsgDelay = setTimeout(function() {
+						$.mobile.showPageLoadingMsg();
+					}, 1500 ),
+
+				// Shared logic for clearing timeout and removing message.
+				hideMsg = function() {
+						clearTimeout( loadMsgDelay );
+						$.mobile.hidePageLoadingMsg();
+				};
+				
+				this.model.save(null, {
+					success:function(){
+						console.log('save success');
+						hideMsg();
+						
+						app.navigate(self.backLink,{replace:true, trigger:true});
+					},
+					error: function(reason) {
+						console.log(reason);
+						// Remove loading message.
+						hideMsg();
+						$.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, reason, true );
+						setTimeout( $.mobile.hidePageLoadingMsg, 1500 );
+				}});
+			}
+		}
+		
 	});
 	
 	JQMListView = Backbone.View.extend({
@@ -227,5 +329,6 @@ define(['jquery',
 	    }
 		
 	});
-		
+	
+	
 });
