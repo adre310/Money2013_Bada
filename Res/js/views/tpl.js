@@ -13,7 +13,7 @@ define(['jquery','backbone','underscore','text'],function() {
 				callback(window.JST[id]);
 			} else {
 				//console.log('loading template: '+id);
-				require(['text!./templates/'+id+'.html'],function(template){
+				require(['text!'+window.TMPL_ROOT+'/'+id+'.html'],function(template){
 					//console.log('get template: '+id);
 					window.JST[id]=_.template(template);
 					callback(window.JST[id]);

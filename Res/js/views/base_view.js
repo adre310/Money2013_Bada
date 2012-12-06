@@ -87,7 +87,7 @@ define(['jquery',
 				
 		render: function() {
 			if(this.options.backLink)
-		        $(this.el).append('<a class="back" data-icon="delete">Back</a>');
+		        $(this.el).append('<a class="back" data-icon="delete">'+Translation.get('generic.back')+'</a>');
 	        $(this.el).append('<h1>'+this.options.headerText+'</h1>');
 	        return this;
 		},
@@ -149,10 +149,7 @@ define(['jquery',
 	DialogView=BasicView.extend({
         role: "dialog",
 		headerText : 'Dialog Header',
-		
-		renderContentView: function() {
-		},
-		
+				
         renderBasicView: function() {
         	$(this.el).append(new DialogHeaderView({
         		headerText: this.headerText
@@ -186,6 +183,57 @@ define(['jquery',
         
 	});
 	
+	DeleteDialogView=DialogView.extend({
+	    
+		initialize:function () {
+			this.headerText=this.options.headerText;
+			DeleteDialogView.__super__.initialize.apply(this);
+	    },
+
+	    events: {
+			'click .delete': 'deleteObject',
+			'click .back': 'back'
+		},
+	    
+		renderContentView: function() {
+			this.contentEl.append('<button type="submit" data-theme="b" class="delete">' + Translation.get('generic.delete')+'</button>');
+			this.contentEl.append('<button class="back" data-rel="back" data-role="button">'+Translation.get('generic.cancel')+'</button>');
+		},
+		
+		deleteObject: function() {
+			var self=this;
+			var loadMsgDelay = setTimeout(function() {
+				$.mobile.showPageLoadingMsg();
+			}, 1500 ),
+
+			hideMsg = function() {
+				clearTimeout( loadMsgDelay );
+				$.mobile.hidePageLoadingMsg();
+			};
+			
+			this.model.destroy({
+				success:function(){
+					console.log('delete success');
+					hideMsg();
+					app.clearCache();
+					app.navigate(self.options.backLink,{replace:true, trigger:true});
+				},
+				error: function(reason) {
+					console.log(reason);
+					// Remove loading message.
+					hideMsg();
+					$.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, reason, true );
+					setTimeout( $.mobile.hidePageLoadingMsg, 1500 );
+				}
+			});
+		},
+		
+		back: function() {
+			app.navigate(this.options.backLink,{replace:true, trigger:true});			
+		}
+		
+	});
+	
 	PageBasicView=BasicView.extend({
 		headerText : 'Page Header',
 				
@@ -209,6 +257,7 @@ define(['jquery',
         }		
 	});
 	
+	
 	FormBasicView=PageBasicView.extend({
 		events: {
 			'click .save': 'save'
@@ -220,6 +269,8 @@ define(['jquery',
 		
 		renderContentView: function() {
 	    	Backbone.Validation.bind(this);
+
+	    	this.contentEl.append('<label class="error form-error" style="display:none" />');
 
 	    	this.form=this.createForm();
 
@@ -245,11 +296,12 @@ define(['jquery',
 					success:function(){
 						console.log('save success');
 						hideMsg();
-						
+						app.clearCache();
 						app.navigate(self.backLink,{replace:true, trigger:true});
 					},
 					error: function(reason) {
 						console.log(reason);
+						$("label.form-error").html(reason).attr("style","");
 						// Remove loading message.
 						hideMsg();
 						$.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, reason, true );

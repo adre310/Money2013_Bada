@@ -77,9 +77,9 @@ define(['jquery',
 	 * PAYS
 	 */
 	window.Pay=API.BaseModel.extend({
-		readUrl: 'rest_api_v1_get_pay',
-		updateUrl: 'rest_api_v1_post_pay_update',
-		deleteUrl: 'rest_api_v1_post_pay_delete',
+		readUrl: 'rest_api_v2_get_pay',
+		updateUrl: 'rest_api_v2_post_pay_update',
+		deleteUrl: 'rest_api_v2_post_pay_delete',
 		defaults: {
 			id: null,
 			notes: '',
@@ -100,7 +100,7 @@ define(['jquery',
 
 	window.PayList=Backbone.Collection.extend({
 		url: function() {
-			return Routing.generate('rest_api_v1_get_accounts_pays',{id:this.account_id});
+			return Routing.generate('rest_api_v2_get_accounts_pays',{id:this.account_id});
 		},
 		model: Pay
 	});
@@ -109,9 +109,9 @@ define(['jquery',
 	 * ACCOUNTS
 	 */
 	window.Account=API.BaseModel.extend({
-		readUrl: 'rest_api_v1_get_account',
-		updateUrl: 'rest_api_v1_post_account_update',
-		deleteUrl: 'rest_api_v1_post_account_delete',
+		readUrl: 'rest_api_v2_get_account',
+		updateUrl: 'rest_api_v2_post_account_update',
+		deleteUrl: 'rest_api_v2_post_account_delete',
 		
 		validation: {
 			name: {
@@ -133,7 +133,7 @@ define(['jquery',
 
 	window.AccountList=Backbone.Collection.extend({
 		url: function() {
-			return Routing.generate('rest_api_v1_get_accounts');
+			return Routing.generate('rest_api_v2_get_accounts');
 		},
 		model: Account
 	});
@@ -142,9 +142,9 @@ define(['jquery',
 	 * CATEGORY
 	 */
 	window.Category=API.BaseModel.extend({
-		readUrl: 'rest_api_v1_get_category',
-		updateUrl: 'rest_api_v1_post_category_update',
-		deleteUrl: 'rest_api_v1_post_category_delete',	
+		readUrl: 'rest_api_v2_get_category',
+		updateUrl: 'rest_api_v2_post_category_update',
+		deleteUrl: 'rest_api_v2_post_category_delete',	
 		validation: {
 			name: {
 				required: true
@@ -152,7 +152,8 @@ define(['jquery',
 		},		
 		defaults: {
 			id: null,
-			name: ''
+			name: '',
+			notes: ''
 		},
 		toString: function() {
 			return this.attributes.name;
@@ -161,7 +162,7 @@ define(['jquery',
 
 	window.CategoriesList=Backbone.Collection.extend({
 		url: function() {
-			return Routing.generate('rest_api_v1_get_categories');
+			return Routing.generate('rest_api_v2_get_categories');
 		},
 		model: Category
 	});
@@ -177,8 +178,19 @@ define(['jquery',
 	
 	window.CurrencyCodesList=Backbone.Collection.extend({
 		url: function() {
-			return Routing.generate('rest_api_v1_get_currency_codes');
+			return Routing.generate('rest_api_v2_get_currency_codes');
 		},
 		model: CurrencyCode
 	});
+	
+	window.CategoryStyleItem=Backbone.Model.extend({
+		toString: function() {
+			return this.attributes.text;
+		}
+	});
+	
+	window.CategoryStyleList=Backbone.Collection.extend({
+		model: CategoryStyleItem
+	});
+	
 });

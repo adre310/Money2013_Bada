@@ -1,5 +1,5 @@
 <a href="#pay/<%= id %>">
-	<h3><%= display_pay_value %></h3>
-	<p><%= notes %></p>
+	<h3><%- display_pay_value %></h3>
+	<p><%- notes %></p>
 	<p class="ui-li-aside"><strong><%= Date.iso8601(pay_date).toLocaleDateString() %></strong></p>
 </a>
