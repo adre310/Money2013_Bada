@@ -29,8 +29,8 @@ define(['jquery',
 	RegisterModel=Backbone.Model.extend({
 		defaults: {
 			id: null,
-			username: 'q12347',
-			email: 'q3@devnul.com',
+			username: 'q12348',
+			email: 'q4@devnul.com',
 			password: '12345678',
 			password_2: '12345678'
 		},		
@@ -66,6 +66,19 @@ define(['jquery',
 		}		
 	});
 
+	ResetModel=Backbone.Model.extend({
+		defaults: {
+			id: null,
+			username: 'q12348'
+		},		
+		validation: {
+			username: {
+				required: true,
+				msg: Translation.get('validate.required')				
+			}
+		}
+	});
+
 	LoginPageView=PageBasicView.extend({
 		id: 'LoginPageView',
 		headerText : Translation.get('layout.login'),
@@ -88,6 +101,7 @@ define(['jquery',
 	        this.contentEl.append(this.form.el);
 	        this.contentEl.append('<button type="submit" data-theme="b" class="login">'+Translation.get('security.login.submit')+'</button>');	
 	        this.contentEl.append('<a href="#register" data-role="button">'+ Translation.get('registration.submit')+'</a>');
+	        this.contentEl.append('<a href="#reset" data-role="button">'+ Translation.get('resetting.request.submit')+'</a>');
 		},
 		
 		login: function() {
@@ -185,4 +199,66 @@ define(['jquery',
 			}
 		}
 	});
+	
+	ResetPageView=PageBasicView.extend({
+		id: 'ResetPageView',
+		headerText : Translation.get('resetting.request.submit'),
+		backLink: '#login',
+
+		events: {
+			"click .reset": "reset"
+		},
+
+		renderContentView: function() {
+	    	Backbone.Validation.bind(this);
+	        this.form = new Backbone.Form({
+	        	model:this.model,
+	        	schema: {
+	        		username:    { type: 'Text', title: Translation.get('form.username')},
+	        	}
+	        }).render();
+	        
+	    	this.contentEl.append('<label class="error form-error" style="display:none" />');
+	        this.contentEl.append(this.form.el);
+	        this.contentEl.append('<button type="submit" data-theme="b" class="reset">'+Translation.get('resetting.request.submit')+'</button>');	
+		},
+		
+		reset: function() {
+			console.log('reset click');
+			if(!this.form.commit()) {
+				var self=this;
+							
+				//$.mobile.loading( 'show' );
+				//console.log("$.mobile.loading( 'show' )");
+				
+				$.ajax({
+					url : Routing.generate('user_rest_api_v2_post_reset'),
+					type: 'POST',
+					dataType: 'json',
+					data: { 
+						username: this.model.get('username') 
+					},
+					success: function(data, textStatus, jqXHR) {
+						//$.mobile.loading( 'hide' );
+						//console.log("$.mobile.loading( 'hide' )");
+						console.log('login saved');
+						if(data.success) {
+							console.log('login saved - successfull');
+							self.contentEl.html(data.error);
+						} else {
+							console.log('login saved - error: '+data.error);
+							$("label.form-error").html(data.error).attr("style","");							
+						}
+					},
+					error:  function(jqXHR, textStatus, errorThrown) {
+						console.log('error login saved');
+						// Remove loading message.
+						//$.mobile.loading( 'hide' );
+						//console.log("$.mobile.loading( 'hide' )");
+					} 
+				});
+			}			
+		}
+	});
+
 });

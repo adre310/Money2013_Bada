@@ -18,6 +18,7 @@ require(['jquery',
 			"" : "Login",
 			"login" : "Login",
 			"register" : "Register",
+			"reset" : "Reset",
 			
 			/* ACCOUNTS */
 			"account/list" : "Accounts",
@@ -44,6 +45,11 @@ require(['jquery',
 		Register: function() {
 			new RegisterPageView({model:new RegisterModel()});
 		},
+		Reset: function() {
+			new ResetPageView({model:new ResetModel()});
+		},
+		
+		
 		Accounts: function() {
 			if(this.isLogin) {
 				new AccountListPageView({model:this.getAccountList()});
