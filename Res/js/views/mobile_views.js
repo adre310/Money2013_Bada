@@ -39,13 +39,19 @@ define(['jquery',
 	        if(this.model.length > 0) {
     			self.listView.renderList();
 	        } else {
-	        	this.model.fetch({
+				//$.mobile.loading( 'show' );
+				//console.log("$.mobile.loading( 'show' )");
+				this.model.fetch({
 	        		success: function() {
 	        			console.log('accounts loaded');
 	        			self.listView.renderList();
+						//$.mobile.loading( 'hide' );
+						//console.log("$.mobile.loading( 'hide' )");
 	        		},
 	        		error:  function() {
 	        			console.log('accounts loaded - error');
+						//$.mobile.loading( 'hide' );
+						//console.log("$.mobile.loading( 'hide' )");
 	        		}
 	        	});
 	        }
@@ -90,13 +96,16 @@ define(['jquery',
     		});    		
     		this.contentEl.append(this.listView.render().el);
     		
-    		this.paylist.fetch({
+			//$.mobile.loading( 'show' );
+			this.paylist.fetch({
 	        	success: function() {
 	        		console.log('pays loaded');
 	        		self.listView.renderList();
+					//$.mobile.loading( 'hide' );
 	        	},
 				error:  function() {
 	        		console.log('pays loaded - error');
+					//$.mobile.loading( 'hide' );
 	        	}
 	        });
 		},
@@ -212,13 +221,16 @@ define(['jquery',
 	        if(this.model.length > 0) {
     			self.listView.renderList();
 	        } else {
-	        	this.model.fetch({
+				//$.mobile.loading( 'show' );
+				this.model.fetch({
 	        		success: function() {
 	        			console.log('category loaded');
 	        			self.listView.renderList();
+						//$.mobile.loading( 'hide' );
 	        		},
 	        		error:  function() {
 	        			console.log('category loaded - error');
+						//$.mobile.loading( 'hide' );
 	        		}
 	        	});
 	        }

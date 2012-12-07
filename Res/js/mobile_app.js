@@ -15,7 +15,9 @@ require(['jquery',
 		isLogin : false,
 		
 		routes: {
-			"" : "Accounts",
+			"" : "Login",
+			"login" : "Login",
+			"register" : "Register",
 			
 			/* ACCOUNTS */
 			"account/list" : "Accounts",
@@ -36,6 +38,12 @@ require(['jquery',
 			"category/:id/delete": "CategoryDelete"
 		},
 
+		Login: function() {
+			new LoginPageView({model:new LoginModel()});
+		},
+		Register: function() {
+			new RegisterPageView({model:new RegisterModel()});
+		},
 		Accounts: function() {
 			if(this.isLogin) {
 				new AccountListPageView({model:this.getAccountList()});
@@ -45,25 +53,31 @@ require(['jquery',
 		},
 		AccountView: function(id) {
 			var account=new Account({id:id});
+			//$.mobile.loading( 'show' );
 			account.fetch({
 				success: function() {
 					console.log('account.fetch('+id+') - success');
+					//$.mobile.loading( 'hide' );
 					new AccountPageView({model:account});
 				},
 				error: function() {
+					//$.mobile.loading( 'hide' );
 					console.log('account.fetch('+id+') - error');
 				}
 			});
 		},
 		AccountEdit: function(id) {
 			var account=new Account({id:id});
+			//$.mobile.loading( 'show' );
 			account.fetch({
 				success: function() {
 					console.log('account.fetch('+id+') - success');
+					//$.mobile.loading( 'hide' );
 					new AccountEditPage({model:account});
 				},
 				error: function() {
 					console.log('account.fetch('+id+') - error');
+					//$.mobile.loading( 'hide' );
 				}
 			});			
 		},
@@ -73,15 +87,18 @@ require(['jquery',
 		},
 		AccountDelete: function(id) {
 			var account=new Account({id:id});
+			//$.mobile.loading( 'show' );
 			account.fetch({
 				success: function() {
 					console.log('account.fetch('+id+') - success');
+					//$.mobile.loading( 'hide' );
 					new DeleteDialogView({
 						model:account,
 						headerText:Translation.get('account.delete')+' '+account.get('name'),
 						backLink: '#accounts'});
 				},
 				error: function() {
+					//$.mobile.loading( 'hide' );
 					console.log('account.fetch('+id+') - error');
 				}
 			});			
@@ -89,27 +106,33 @@ require(['jquery',
 		
 		PayEdit: function(id) {
 			var pay=new Pay({id:id});
+			//$.mobile.loading( 'show' );
 			pay.fetch({
 				success: function() {
 					console.log('pay.fetch('+id+') - success');
+					//$.mobile.loading( 'hide' );
 					new PayEditPage({model:pay});
 				},
 				error: function() {
+					//$.mobile.loading( 'hide' );
 					console.log('pay.fetch('+id+') - error');
 				}
 			});
 		},
 		PayDelete: function(id) {
 			var pay=new Pay({id:id});
+			//$.mobile.loading( 'show' );
 			pay.fetch({
 				success: function() {
 					console.log('pay.fetch('+id+') - success');
+					//$.mobile.loading( 'hide' );
 					new DeleteDialogView({
 						model:pay,
 						headerText:Translation.get('pay.delete'),
 						backLink: '#account/'+pay.get('account_id')+'/show'});
 				},
 				error: function() {
+					//$.mobile.loading( 'hide' );
 					console.log('pay.fetch('+id+') - error');
 				}
 			});
@@ -125,13 +148,16 @@ require(['jquery',
 		},
 		CategoryEdit: function(id) {
 			var category=new Category({id:id});
+			//$.mobile.loading( 'show' );
 			category.fetch({
 				success: function() {
 					console.log('category.fetch('+id+') - success');
+					//$.mobile.loading( 'hide' );
 					new CategoryEditPage({model:category});
 				},
 				error: function() {
 					console.log('category.fetch('+id+') - error');
+					//$.mobile.loading( 'hide' );
 				}
 			});
 		},
@@ -141,15 +167,18 @@ require(['jquery',
 		},
 		CategoryDelete: function(id) {
 			var category=new Category({id:id});
+			//$.mobile.loading( 'show' );
 			category.fetch({
 				success: function() {
 					console.log('category.fetch('+id+') - success');
+					//$.mobile.loading( 'hide' );
 					new DeleteDialogView({
 						model:category,
 						headerText:Translation.get('category.delete')+' '+category.get('name'),
 						backLink: '#category/list'});
 				},
 				error: function() {
+					//$.mobile.loading( 'hide' );
 					console.log('category.fetch('+id+') - error');
 				}
 			});

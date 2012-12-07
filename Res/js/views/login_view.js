@@ -23,8 +23,47 @@ define(['jquery',
 			id: null,
 			login: 'demo',
 			password: 'demo'
-		}
-		
+		}		
+	});
+	
+	RegisterModel=Backbone.Model.extend({
+		defaults: {
+			id: null,
+			username: 'q12347',
+			email: 'q3@devnul.com',
+			password: '12345678',
+			password_2: '12345678'
+		},		
+		validation: {
+			username: [{
+				required: true,
+				msg: Translation.get('fos_user.username.blank')				
+			}, {
+				minLength: 4,
+				msg: Translation.get('fos_user.username.short')				
+			}],
+			email: [{
+					required: true,
+					msg: Translation.get('fos_user.email.blank')				
+				},{
+					pattern: 'email',
+					msg: Translation.get('fos_user.email.invalid')
+			    }],
+			password: [{
+					required: true,
+					msg: Translation.get('fos_user.password.blank')				
+				}, {
+					minLength: 8,
+					msg: Translation.get('fos_user.password.short')				
+				}],
+			password_2: [{
+				required: true,
+				msg: Translation.get('fos_user.password.blank')				
+			}, {
+				equalTo: 'password',
+				msg: Translation.get('validate.equalTo')				
+			}]
+		}		
 	});
 
 	LoginPageView=PageBasicView.extend({
@@ -48,27 +87,16 @@ define(['jquery',
 	    	this.contentEl.append('<label class="error form-error" style="display:none" />');
 	        this.contentEl.append(this.form.el);
 	        this.contentEl.append('<button type="submit" data-theme="b" class="login">'+Translation.get('security.login.submit')+'</button>');	
+	        this.contentEl.append('<a href="#register" data-role="button">'+ Translation.get('registration.submit')+'</a>');
 		},
 		
 		login: function() {
 			console.log('login click');
 			if(!this.form.commit()) {
 							
-				// This configurable timeout allows cached pages a brief delay to load without showing a message
-				var loadMsgDelay = setTimeout(function() {
-						$.mobile.showPageLoadingMsg();
-					}, 1500 ),
-
-				// Shared logic for clearing timeout and removing message.
-				hideMsg = function() {
-
-						// Stop message show timer
-						clearTimeout( loadMsgDelay );
-
-						// Hide loading message
-						$.mobile.hidePageLoadingMsg();
-				};
-					
+				//$.mobile.loading( 'show' );
+				//console.log("$.mobile.loading( 'show' )");
+				
 				$.ajax({
 					url : Routing.generate('user_rest_api_v2_post_login'),
 					type: 'POST',
@@ -78,40 +106,83 @@ define(['jquery',
 						password: this.model.get('password') 
 					},
 					success: function(data, textStatus, jqXHR) {
+						//$.mobile.loading( 'hide' );
+						//console.log("$.mobile.loading( 'hide' )");
 						console.log('login saved');
 						if(data.success) {
 							console.log('login saved - successfull');
-							hideMsg();
 							app.isLogin=true;
 							app.navigate('account/list',{replace:true, trigger:true});							
 						} else {
 							console.log('login saved - error: '+data.error);
-							$("label.form-error").html(data.error).attr("style","");
-							
-							// Remove loading message.
-							hideMsg();
-
-							// show error message
-							$.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, data.error, true );
-
-							// hide after delay
-							setTimeout( $.mobile.hidePageLoadingMsg, 3000 );
+							$("label.form-error").html(data.error).attr("style","");							
 						}
 					},
 					error:  function(jqXHR, textStatus, errorThrown) {
 						console.log('error login saved');
 						// Remove loading message.
-						hideMsg();
-
-						// show error message
-						$.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, $.mobile.pageLoadErrorMessage, true );
-
-						// hide after delay
-						setTimeout( $.mobile.hidePageLoadingMsg, 3000 );
+						//$.mobile.loading( 'hide' );
+						//console.log("$.mobile.loading( 'hide' )");
 					} 
 				});
 			}			
 		}
 	});
 	
+	RegisterPageView=PageBasicView.extend({
+		id: 'RegisterPageView',
+		headerText : Translation.get('layout.register'),
+		backLink: '#login',
+
+		events: {
+			"click .register": "register"
+		},
+
+		renderContentView: function() {
+	    	Backbone.Validation.bind(this);
+	        this.form = new Backbone.Form({
+	        	model:this.model,
+	        	schema: {
+	        		username: { type: 'Text', title: Translation.get('form.username')},
+	        		email: 	  { type: 'Text', title: Translation.get('form.email')},
+	        		password: { type: 'Password', title: Translation.get('form.password')},
+	        		password_2: { type: 'Password', title: Translation.get('form.password_confirmation')}
+	        	}
+	        }).render();
+	        
+	    	this.contentEl.append('<label class="error form-error" style="display:none"/>');
+	        this.contentEl.append(this.form.el);
+	        this.contentEl.append('<button type="submit" data-theme="b" class="register">'+Translation.get('registration.submit')+'</button>');	
+		},
+		
+		register: function() {
+			if(!this.form.commit()) {
+				console.log('register valid');
+				
+				var self=this;
+				
+				$.ajax({
+					url : Routing.generate('user_rest_api_v2_post_register'),
+					type: 'POST',
+					dataType: 'json',
+					data: JSON.stringify(this.model.toJSON()),
+					success: function(data, textStatus, jqXHR) {
+						console.log('Register success');
+						if(data.success) {
+							console.log('Register success - successfull: '+data.error);
+							self.contentEl.html(data.error);
+							
+						} else {
+							console.log('Register success - error: '+data.error);
+							$("label.form-error").html(data.error).show();
+						}
+					},
+					error:  function(jqXHR, textStatus, errorThrown) {
+						console.log('error register');
+					} 
+				});
+				
+			}
+		}
+	});
 });
