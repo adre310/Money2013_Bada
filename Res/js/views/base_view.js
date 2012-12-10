@@ -202,18 +202,28 @@ define(['jquery',
 		
 		deleteObject: function() {
 			var self=this;
-			//$.mobile.loading( 'show' );
+			var loadMsgDelay = setTimeout(function() {
+				$.mobile.showPageLoadingMsg();
+			}, 1500 ),
+
+			hideMsg = function() {
+				clearTimeout( loadMsgDelay );
+				$.mobile.hidePageLoadingMsg();
+			};
 			
 			this.model.destroy({
 				success:function(){
 					console.log('delete success');
-					//$.mobile.loading( 'hide' );
+					hideMsg();
 					app.clearCache();
 					app.navigate(self.options.backLink,{replace:true, trigger:true});
 				},
 				error: function(reason) {
 					console.log(reason);
-					//$.mobile.loading( 'hide' );
+					// Remove loading message.
+					hideMsg();
+					$.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, reason, true );
+					setTimeout( $.mobile.hidePageLoadingMsg, 1500 );
 				}
 			});
 		},
@@ -271,12 +281,21 @@ define(['jquery',
 		save: function() {
 			if(!this.form.commit()) {
 				var self=this;
-				//$.mobile.loading( 'show' );
+				// This configurable timeout allows cached pages a brief delay to load without showing a message
+				var loadMsgDelay = setTimeout(function() {
+						$.mobile.showPageLoadingMsg();
+					}, 1500 ),
+
+				// Shared logic for clearing timeout and removing message.
+				hideMsg = function() {
+						clearTimeout( loadMsgDelay );
+						$.mobile.hidePageLoadingMsg();
+				};
 				
 				this.model.save(null, {
 					success:function(){
 						console.log('save success');
-						//$.mobile.loading( 'hide' );
+						hideMsg();
 						app.clearCache();
 						app.navigate(self.backLink,{replace:true, trigger:true});
 					},
@@ -284,7 +303,9 @@ define(['jquery',
 						console.log(reason);
 						$("label.form-error").html(reason).attr("style","");
 						// Remove loading message.
-						//$.mobile.loading( 'hide' );
+						hideMsg();
+						$.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, reason, true );
+						setTimeout( $.mobile.hidePageLoadingMsg, 1500 );
 				}});
 			}
 		}

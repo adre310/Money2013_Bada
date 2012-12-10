@@ -39,19 +39,13 @@ define(['jquery',
 	        if(this.model.length > 0) {
     			self.listView.renderList();
 	        } else {
-				//$.mobile.loading( 'show' );
-				//console.log("$.mobile.loading( 'show' )");
-				this.model.fetch({
+	        	this.model.fetch({
 	        		success: function() {
 	        			console.log('accounts loaded');
 	        			self.listView.renderList();
-						//$.mobile.loading( 'hide' );
-						//console.log("$.mobile.loading( 'hide' )");
 	        		},
 	        		error:  function() {
 	        			console.log('accounts loaded - error');
-						//$.mobile.loading( 'hide' );
-						//console.log("$.mobile.loading( 'hide' )");
 	        		}
 	        	});
 	        }
@@ -83,8 +77,8 @@ define(['jquery',
 			this.contentEl.append(this.template(this.model.toJSON()));
     		
     		var self=this;
-    		this.paylist=new PayList();
-    		this.paylist.account_id=this.model.get('id');
+    		
+    		this.paylist=app.getPayList(this.model.get('id'));
 
     		this.listView=new JQMListView({
     			model:this.paylist,
@@ -95,19 +89,21 @@ define(['jquery',
             	}    			
     		});    		
     		this.contentEl.append(this.listView.render().el);
-    		
-			//$.mobile.loading( 'show' );
-			this.paylist.fetch({
-	        	success: function() {
-	        		console.log('pays loaded');
-	        		self.listView.renderList();
-					//$.mobile.loading( 'hide' );
-	        	},
-				error:  function() {
-	        		console.log('pays loaded - error');
-					//$.mobile.loading( 'hide' );
-	        	}
-	        });
+
+    		if(this.paylist.loaded) {
+    			this.listView.renderList();
+    		} else {
+    			this.paylist.fetch({
+    				success: function() {
+    					console.log('pays loaded');
+    					self.listView.renderList();
+    					self.paylist.loaded=true;
+    				},
+    				error:  function() {
+    					console.log('pays loaded - error');
+    				}
+    			});
+    		}
 		},
         _afterInit: function() {
     		this.listView.refresh();
@@ -221,16 +217,13 @@ define(['jquery',
 	        if(this.model.length > 0) {
     			self.listView.renderList();
 	        } else {
-				//$.mobile.loading( 'show' );
-				this.model.fetch({
+	        	this.model.fetch({
 	        		success: function() {
 	        			console.log('category loaded');
 	        			self.listView.renderList();
-						//$.mobile.loading( 'hide' );
 	        		},
 	        		error:  function() {
 	        			console.log('category loaded - error');
-						//$.mobile.loading( 'hide' );
 	        		}
 	        	});
 	        }

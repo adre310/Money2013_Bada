@@ -10,14 +10,14 @@
 <link rel="stylesheet" href='./css/mobile.css' />
 
 <script type="text/javascript" src="./js/lib/router.js"></script>
-<script type="text/javascript" src="https://172.26.10.23:9443/Money2013/web/app_dev.php/js/routing?callback=fos.Router.setData"></script>
+<script type="text/javascript" src="https://adre310.x10.mx/js/routing?callback=fos.Router.setData"></script>
 <script type="text/javascript" src="./js/locale.js"></script>
-<script type="text/javascript" src="https://172.26.10.23:9443/Money2013/web/app_dev.php/v1/translation?callback=Translation.setData"></script>
+<script type="text/javascript" src="https://adre310.x10.mx/v1/translation?callback=Translation.setData"></script>
 
 <script src='./js/lib/require-2.1.1.min.js'></script>
         <script type="text/javascript">
         window.TMPL_ROOT='./templates';
-        window.WEB_ROOT='https://172.26.10.23:9443/Money2013/web/app_dev.php';
+        window.WEB_ROOT='https://adre310.x10.mx'; // 'https://172.26.10.23:9443/Money2013/web/app_dev.php';
         
         requirejs.config({
             deps: ['app'],
@@ -36,6 +36,7 @@
                 'mobiscroll': './js/lib/mobiscroll.jqm-2.2',
                 'mobiscroll-jqm-2': './js/lib/jquery.mobile.mobiscroll-2.2',
                 'my-utils': './js/lib/global',
+                'base_app':   './js/base_mobile_app',
                 'app':   './js/mobile_app',
                 'model': './js/model/model',
                 'base_view': './js/views/base_view',
