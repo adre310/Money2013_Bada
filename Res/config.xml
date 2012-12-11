@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <widget>
-	<access origin="*" subdomains="true"/>
+	<access origin="http://adre310.x10.mx" subdomains="true"/>
+	<access origin="https://adre310.x10.mx" subdomains="true"/>
 </widget>

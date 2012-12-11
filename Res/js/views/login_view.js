@@ -21,18 +21,18 @@ define(['jquery',
 		},
 		defaults: {
 			id: null,
-			login: 'demo',
-			password: 'demo'
+			login: '',
+			password: ''
 		}		
 	});
 	
 	RegisterModel=Backbone.Model.extend({
 		defaults: {
 			id: null,
-			username: 'q12348',
-			email: 'q4@devnul.com',
-			password: '12345678',
-			password_2: '12345678'
+			username: '',
+			email: '',
+			password: '',
+			password_2: ''
 		},		
 		validation: {
 			username: [{
@@ -179,7 +179,11 @@ define(['jquery',
 					url : Routing.generate('user_rest_api_v2_post_register'),
 					type: 'POST',
 					dataType: 'json',
-					data: JSON.stringify(this.model.toJSON()),
+					data: {
+						username: this.model.get('username'),
+						email: this.model.get('email'),
+						password: this.model.get('password')
+					},
 					success: function(data, textStatus, jqXHR) {
 						console.log('Register success');
 						if(data.success) {
