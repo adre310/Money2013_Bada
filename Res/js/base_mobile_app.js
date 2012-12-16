@@ -239,6 +239,6 @@ define(['jquery',
 				
 	});
 	
-	console.log(BaseMobileApp);
+	//console.log(BaseMobileApp);
 	return BaseMobileApp;
 });
