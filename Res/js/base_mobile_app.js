@@ -11,7 +11,16 @@ define(['jquery',
          'my-utils',
          'jquery.mobile'], function() {
 	BaseMobileApp=Backbone.Router.extend({
-
+		 initialize: function() {
+			 return this.bind('all', this._trackPageview);
+	     },
+	     _trackPageview: function() {
+	    	 var url= Backbone.history.getFragment();
+	    	 //console.log('_trackPageview /' + url);
+	    	 //console.log(_gaq);
+			 return _gaq.push(['_trackPageview', "/" + url]);
+	    },
+		
 		Accounts: function() {
 			new AccountListPageView({model:this.getAccountList()});
 		},
@@ -239,6 +248,6 @@ define(['jquery',
 				
 	});
 	
-	//console.log(BaseMobileApp);
+	console.log(BaseMobileApp);
 	return BaseMobileApp;
 });
