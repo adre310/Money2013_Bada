@@ -8,7 +8,7 @@ define(['jquery',
 	window.API={};	
 	window.API.BaseModel=Backbone.Model.extend({
 	    save: function(key, value, options) {
-	        console.log('save');
+	        //console.log('save');
 	        var attrs, current;
 
 	        // Handle both `("key", value)` and `({key: value})` -style calls.
@@ -30,7 +30,7 @@ define(['jquery',
 	        return this.sync('delete', this, options);
 	    },
 		sync: function(method, model, options) {
-			console.log('BaseModel.sync('+method+')');
+			//console.log('BaseModel.sync('+method+')');
 			if(method=='read') {
 				options.url=Routing.generate(this.readUrl,{id:this.id});
 				return Backbone.sync('read',model,options);
@@ -45,26 +45,26 @@ define(['jquery',
 			    var fn_success = options.success;
 			    var fn_error = options.error;
 				
-				console.log('API.BaseModel url: '+url);
+				//console.log('API.BaseModel url: '+url);
 				return $.ajax({
 					url : url,
 					type: 'POST',
 					dataType: 'json',
 					data: JSON.stringify(this.toJSON()),
 					success: function(data, textStatus, jqXHR) {
-						console.log('API.BaseModel sync success');
+						//console.log('API.BaseModel sync success');
 						if(data.success) {
-							console.log('return - success');
+							//console.log('return - success');
 							if(fn_success)
 								fn_success();
 						} else {
-							console.log('return - error: '+data.error);
+							//console.log('return - error: '+data.error);
 							if(fn_error)
 								fn_error(data.error);
 						}
 					}, 
 					error:  function(jqXHR, textStatus, errorThrown) {
-						console.log('API.BaseModel sync error - '+textStatus);
+						//console.log('API.BaseModel sync error - '+textStatus);
 						if(fn_error)
 							fn_error('error');
 					}
@@ -193,4 +193,52 @@ define(['jquery',
 		model: CategoryStyleItem
 	});
 	
+	
+	window.Transfer=API.BaseModel.extend({
+		readUrl:   'rest_api_v2_post_transfer',
+		updateUrl: 'rest_api_v2_post_transfer',
+		deleteUrl: 'rest_api_v2_post_transfer',	
+
+		validation: {
+			value: [{
+				required: true,
+				msg: Translation.get('validate.required')				
+			}, 
+			{
+				pattern: /^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/,
+				msg: Translation.get('validate.number')				
+			}]
+		},		
+		defaults: {
+			id: null,
+			value: '',
+			account_from_id: '',
+			account_to_id: ''
+		}
+	});
+	
+	window.Merge=API.BaseModel.extend({
+		readUrl:   'rest_api_v2_post_merge',
+		updateUrl: 'rest_api_v2_post_merge',
+		deleteUrl: 'rest_api_v2_post_merge',	
+
+		defaults: {
+			id: null,
+			account_from_id: '',
+			account_to_id: ''
+		}
+	});
+	
+	window.ChartCollection=Backbone.Collection.extend({
+		url: function() {
+			return Routing.generate('rest_api_v2_get_charts');
+		},
+		model: CurrencyCode
+	});
+	
+	window.ChartModel=API.BaseModel.extend({
+		readUrl:   'rest_api_v2_get_charts',
+		updateUrl: 'rest_api_v2_post_charts',
+		deleteUrl: 'rest_api_v2_post_charts',	
+	});
 });

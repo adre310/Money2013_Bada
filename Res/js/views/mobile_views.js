@@ -19,13 +19,14 @@ define(['jquery',
 	    	this.navlist=new Backbone.Collection;
 	    	this.navlist.add([
 	    	   {link:'#account/new',text:Translation.get('account.create')},
-	    	   {link:'#category/list',text:Translation.get('category.list')}
+	    	   {link:'#category/list',text:Translation.get('category.list')},
+	    	   {link:'#charts',text:Translation.get('chart.menu')}
 	    	   ]);
 	    	AccountListPageView.__super__.initialize.apply(this);
 	    },	
 	    
 		renderContentView: function() {
-			console.log('AccountListPageView renderContentView');
+			//console.log('AccountListPageView renderContentView');
 	        
     		this.listView=new JQMListView({
     			model:this.model,
@@ -41,11 +42,11 @@ define(['jquery',
 	        } else {
 	        	this.model.fetch({
 	        		success: function() {
-	        			console.log('accounts loaded');
+	        			//console.log('accounts loaded');
 	        			self.listView.renderList();
 	        		},
 	        		error:  function() {
-	        			console.log('accounts loaded - error');
+	        			//console.log('accounts loaded - error');
 	        		}
 	        	});
 	        }
@@ -61,7 +62,7 @@ define(['jquery',
 		backLink: '#account/list',
 
 		initialize: function () {
-			console.log('AccountPageView init');
+			//console.log('AccountPageView init');
 			
 			this.headerText=Translation.get('account.title')+' '+this.model.get('name');
 
@@ -69,7 +70,9 @@ define(['jquery',
 	    	this.navlist.add([
 	    	   {link:'#pay/'+this.model.get('id')+'/new',text:Translation.get('pay.create')},
 	    	   {link:'#account/'+this.model.get('id')+'/edit',text:Translation.get('account.edit')},
-	    	   {link:'#account/'+this.model.get('id')+'/delete',text:Translation.get('account.delete')}
+	    	   {link:'#account/'+this.model.get('id')+'/delete',text:Translation.get('account.delete')},
+	    	   {link:'#account/'+this.model.get('id')+'/transfer',text:Translation.get('transfer.name')},
+	    	   {link:'#account/'+this.model.get('id')+'/merge',text:Translation.get('merge.name')}
 	    	   ]);
 	    	AccountPageView.__super__.initialize.apply(this);
 	    },	
@@ -95,12 +98,12 @@ define(['jquery',
     		} else {
     			this.paylist.fetch({
     				success: function() {
-    					console.log('pays loaded');
+    					//console.log('pays loaded');
     					self.listView.renderList();
     					self.paylist.loaded=true;
     				},
     				error:  function() {
-    					console.log('pays loaded - error');
+    					//console.log('pays loaded - error');
     				}
     			});
     		}
@@ -154,7 +157,55 @@ define(['jquery',
 	        	}
 	        });
 		}	    
-	});	
+	});
+	
+	AccountTransferPage=FormBasicView.extend({
+		id: 'AccountTransferPage',
+		headerText: Translation.get('transfer.name'),
+
+		initialize: function () {
+			//console.log('PayEditPage init ->');
+			
+			this.backLink='#account/'+this.model.get('account_from_id')+'/show';
+
+	    	AccountTransferPage.__super__.initialize.apply(this);
+			//console.log('PayEditPage init <-');
+	    },
+	    
+		createForm: function() {
+			return new Backbone.Form({
+	        	model:this.model,
+	        	schema: {
+	        		value:    { type: 'Text',title:Translation.get('transfer.value')},
+	        		account_to_id: { type: 'jqm.select', options: /*app.getAccountList() */ app.getAccountListByAccountId(this.model.get('account_from_id')), title:Translation.get('transfer.to')},
+	        	}
+	        });
+		}	    
+	});
+
+	AccountMergePage=FormBasicView.extend({
+		id: 'AccountMergePage',
+		headerText: Translation.get('merge.name'),
+
+		initialize: function () {
+			//console.log('PayEditPage init ->');
+			
+			this.backLink='#account/'+this.model.get('account_from_id')+'/show';
+
+			AccountMergePage.__super__.initialize.apply(this);
+			//console.log('PayEditPage init <-');
+	    },
+	    
+		createForm: function() {
+			return new Backbone.Form({
+	        	model:this.model,
+	        	schema: {
+	        		account_to_id: { type: 'jqm.select', options: app.getAccountListByAccountId(this.model.get('account_from_id')), title:Translation.get('merge.to')},
+	        	}
+	        });
+		}	    
+	});
+	
 	PayEditPage=FormBasicView.extend({
 		id: 'PayEditPage',
 
@@ -201,7 +252,7 @@ define(['jquery',
 	    },	
 	    
 		renderContentView: function() {
-			console.log('CategoryListPageView renderContentView');
+			//console.log('CategoryListPageView renderContentView');
 	        
     		this.listView=new JQMListView({
     			model:this.model,
@@ -219,11 +270,11 @@ define(['jquery',
 	        } else {
 	        	this.model.fetch({
 	        		success: function() {
-	        			console.log('category loaded');
+	        			//console.log('category loaded');
 	        			self.listView.renderList();
 	        		},
 	        		error:  function() {
-	        			console.log('category loaded - error');
+	        			//console.log('category loaded - error');
 	        		}
 	        	});
 	        }

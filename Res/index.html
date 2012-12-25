@@ -7,6 +7,7 @@
 <link rel="stylesheet" href='./css/jquery.mobile.structure-1.2.0.min.css' />
 <link rel="stylesheet" href='./css/money2013.min.css' />
 <link rel="stylesheet" href='./css/mobiscroll-2.3.custom.min.css' />
+<link rel="stylesheet" href='./css/jqplot/jquery.jqplot.min.css' />
 <link rel="stylesheet" href='./css/mobile.css' />
 
 <script type="text/javascript">
@@ -52,12 +53,17 @@
                 'model': './js/model/model',
                 'base_view': './js/views/base_view',
                 'views': './js/views/mobile_views',
+                'chart_view': './js/views/chart_view',
                 'login': './js/views/login_view',
                 'forms_ext': './js/views/forms_ext',
-                'template': './js/views/tpl'                
+                'template': './js/views/tpl',
+                
+
+                'jqPlot': './js/jqplot/jquery.jqplot.min',
+                'jqPlot.pie': './js/jqplot/plugins/jqplot.pieRenderer.min'
+                
                 },
             shim: {
-            	//'mobiscroll-datetime': ['jquery','jquery.mobile','mobiscroll'],
                 'jquery.mobile-config': ['jquery'],
                 'jquery.mobile': ['jquery','jquery.mobile-config'],
                 'underscore': {
@@ -67,7 +73,9 @@
         			deps: ['jquery','underscore'],
         			exports: 'Backbone'
         		 },
-        	'mobiscroll': ['jquery','jquery.mobile']
+        	    'mobiscroll': ['jquery','jquery.mobile'],
+       		    'jqPlot': ['jquery'],
+    		    'jqPlot.pie': ['jquery','jqPlot']        	    
         	}
         });
         </script>

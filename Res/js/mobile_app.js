@@ -27,6 +27,8 @@ require(['jquery',
 			"account/new" : "AccountNew",
 			"account/:id/edit" : "AccountEdit",
 			"account/:id/delete" : "AccountDelete",
+			"account/:id/transfer"  : "AccountTransfer",
+			"account/:id/merge"  : "AccountMerge",
 			
 			/* PAYS */
 			"pay/:id": "PayEdit",
@@ -37,7 +39,9 @@ require(['jquery',
 			"category/list": "Categories",
 			"category/:id/edit": "CategoryEdit",
 			"category/new": "CategoryNew",
-			"category/:id/delete": "CategoryDelete"
+			"category/:id/delete": "CategoryDelete",
+			
+			"charts" : "Charts"
 		},
 
 		Login: function() {

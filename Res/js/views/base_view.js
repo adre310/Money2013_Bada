@@ -87,8 +87,10 @@ define(['jquery',
 				
 		render: function() {
 			if(this.options.backLink)
-		        $(this.el).append('<a class="back" data-icon="delete">'+Translation.get('generic.back')+'</a>');
+		        $(this.el).append('<a class="back" data-icon="back">'+Translation.get('generic.back')+'</a>');
 	        $(this.el).append('<h1>'+this.options.headerText+'</h1>');
+			if(this.options.rightLink)
+		        $(this.el).append('<a class="right" data-icon="gear">'+this.options.rightLink+'</a>');
 	        return this;
 		},
 		
@@ -213,13 +215,13 @@ define(['jquery',
 			
 			this.model.destroy({
 				success:function(){
-					console.log('delete success');
+					//console.log('delete success');
 					hideMsg();
 					app.clearCache();
 					app.navigate(self.options.backLink,{replace:true, trigger:true});
 				},
 				error: function(reason) {
-					console.log(reason);
+					//console.log(reason);
 					// Remove loading message.
 					hideMsg();
 					$.mobile.showPageLoadingMsg( $.mobile.pageLoadErrorMessageTheme, reason, true );
@@ -243,6 +245,7 @@ define(['jquery',
         renderBasicView: function() {
         	$(this.el).append(new HeaderView({
         		backLink: this.backLink,
+        		rightLink: this.rightLink,
         		backText: this.backText,
         		headerText: this.headerText
         	}).render().el);
@@ -294,13 +297,13 @@ define(['jquery',
 				
 				this.model.save(null, {
 					success:function(){
-						console.log('save success');
+						//console.log('save success');
 						hideMsg();
 						app.clearCache();
 						app.navigate(self.backLink,{replace:true, trigger:true});
 					},
 					error: function(reason) {
-						console.log(reason);
+						//console.log(reason);
 						$("label.form-error").html(reason).attr("style","");
 						// Remove loading message.
 						hideMsg();
@@ -354,7 +357,7 @@ define(['jquery',
 	    		//console.log('refresh list');
 	    		$(this.el).listview('refresh');
 	    	} catch(ex) {
-	    		console.log('refresh list - error');
+	    		//console.log('refresh list - error');
 	    	}
 	    }
 	});
