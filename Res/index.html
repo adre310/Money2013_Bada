@@ -58,9 +58,12 @@
                 'forms_ext': './js/views/forms_ext',
                 'template': './js/views/tpl',
                 
-
                 'jqPlot': './js/jqplot/jquery.jqplot.min',
-                'jqPlot.pie': './js/jqplot/plugins/jqplot.pieRenderer.min'
+                'jqPlot.pie': './js/jqplot/plugins/jqplot.pieRenderer.min',
+                'jqPlot.bar': './js/jqplot/plugins/jqplot.barRenderer.min',
+                'jqPlot.axes.category': './js/jqplot/plugins/jqplot.categoryAxisRenderer.min',
+                'jqPlot.axes.canvas': './js/jqplot/plugins/jqplot.canvasAxisTickRenderer.min',
+                'jqPlot.axes.canvas.text': './js/jqplot/plugins/jqplot.canvasTextRenderer.min',
                 
                 },
             shim: {
@@ -74,8 +77,13 @@
         			exports: 'Backbone'
         		 },
         	    'mobiscroll': ['jquery','jquery.mobile'],
-       		    'jqPlot': ['jquery'],
-    		    'jqPlot.pie': ['jquery','jqPlot']        	    
+        	    
+       		 'jqPlot': ['jquery'],
+    		 'jqPlot.pie': ['jquery','jqPlot'],
+    		 'jqPlot.bar': ['jquery','jqPlot'],
+    		 'jqPlot.axes.category': ['jquery','jqPlot'],
+    		 'jqPlot.axes.canvas': ['jquery','jqPlot','jqPlot.axes.canvas.text'],
+    		 'jqPlot.axes.canvas.text': ['jquery','jqPlot'],
         	}
         });
         </script>

@@ -199,6 +199,7 @@ define(['jquery',
 	          	var dayAfter=new Date(today.getFullYear(),today.getMonth(),1);
 	          	var dayBefore=new Date(today.getFullYear(),today.getMonth()+1,1);
 	          	
+				this.chart_options.set('kind_charts',0);
 				this.chart_options.set('after',dayAfter);
 				this.chart_options.set('before',dayBefore);
 			}

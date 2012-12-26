@@ -86,29 +86,31 @@ define(['jquery',
 			$('#chart_div',this.contentEl).css('height',h);
 			
 			var self=this;
-			require(['jqPlot','jqPlot.pie'],function() {
-				var series=[[]];
+			require(['jqPlot','jqPlot.bar','jqPlot.axes.category','jqPlot.axes.canvas','jqPlot.axes.canvas.text'],function() {
+				var series=[];
 				
 				for ( var it in self.options.data) {
-					series[0].push([
-					       self.options.data[it].category,
-					       Number(self.options.data[it].balance)]);
+					series.push([self.options.data[it].category, Number(self.options.data[it].balance)]);
 				}
 				
-				var plot1 = $.jqplot ('chart_div', series, { 
+				$.jqplot('chart_div', [series], {
+			        // The "seriesDefaults" option is an options object that will
+			        // be applied to all series in the chart.
 					title: Translation.get('chart.kind.category'),
-					seriesDefaults: {
-						// Make this a pie chart.
-						renderer: $.jqplot.PieRenderer, 
-							rendererOptions: {
-				                    // Put data labels on the pie slices.
-				                    // By default, labels show the percentage of the slice.
-				                    showDataLabels: true
-				                  }
-				                }, 
-				                legend: { show:true, location: 's' }
-				              }
-				            );			
+				    series:[{renderer:$.jqplot.BarRenderer}],
+				    axesDefaults: {
+				        tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+				        tickOptions: {
+				          angle: -30,
+				          fontSize: '10pt'
+				        }
+				    },
+				    axes: {
+				      xaxis: {
+				        renderer: $.jqplot.CategoryAxisRenderer
+				      }
+				    }
+			    });			
 			});
 		},
 				
