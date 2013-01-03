@@ -8,10 +8,18 @@ define(['jquery',
          'underscore',
          'model',
          'views',
+         'chart_view',
          'my-utils',
          'jquery.mobile'], function() {
 	BaseMobileApp=Backbone.Router.extend({
-
+		 initialize: function() {
+			 return this.bind('all', this._trackPageview);
+	     },
+	     _trackPageview: function() {
+	    	 var url= Backbone.history.getFragment();
+			 return _gaq.push(['_trackPageview', "/" + url]);
+	    },
+		
 		Accounts: function() {
 			new AccountListPageView({model:this.getAccountList()});
 		},
@@ -23,11 +31,11 @@ define(['jquery',
 				account=new Account({id:id});
 				account.fetch({
 					success: function() {
-						console.log('account.fetch('+id+') - success');
+						//console.log('account.fetch('+id+') - success');
 						new AccountPageView({model:account});
 					},
 					error: function() {
-						console.log('account.fetch('+id+') - error');
+						//console.log('account.fetch('+id+') - error');
 					}
 				});
 			}
@@ -40,11 +48,11 @@ define(['jquery',
 				account=new Account({id:id});
 				account.fetch({
 					success: function() {
-						console.log('account.fetch('+id+') - success');
+						//console.log('account.fetch('+id+') - success');
 						new AccountEditPage({model:account});
 					},
 					error: function() {
-						console.log('account.fetch('+id+') - error');
+						//console.log('account.fetch('+id+') - error');
 					}
 				});
 			}
@@ -64,17 +72,30 @@ define(['jquery',
 				account=new Account({id:id});
 				account.fetch({
 					success: function() {
-						console.log('account.fetch('+id+') - success');
+						//console.log('account.fetch('+id+') - success');
 						new DeleteDialogView({
 							model:account,
 							headerText:Translation.get('account.delete')+' '+account.get('name'),
 							backLink: '#account/list'});
 					},
 					error: function() {
-						console.log('account.fetch('+id+') - error');
+						//console.log('account.fetch('+id+') - error');
 					}
 				});
 			}
+		},
+		AccountMerge: function(id) {
+			this.getAccountListAndFetch(function(){				
+				var merge=new Merge({account_from_id:id});
+				new AccountMergePage({model:merge});				
+			});
+		},
+		
+		AccountTransfer: function(id) {
+			this.getAccountListAndFetch(function(){				
+				var transfer=new Transfer({account_from_id:id});
+				new AccountTransferPage({model:transfer});
+			});
 		},
 		
 		PayEdit: function(id) {
@@ -85,11 +106,11 @@ define(['jquery',
 				pay=new Pay({id:id});
 				pay.fetch({
 					success: function() {
-						console.log('pay.fetch('+id+') - success');
+						//console.log('pay.fetch('+id+') - success');
 						new PayEditPage({model:pay});
 					},
 					error: function() {
-						console.log('pay.fetch('+id+') - error');
+						//console.log('pay.fetch('+id+') - error');
 					}
 				});
 			}
@@ -105,14 +126,14 @@ define(['jquery',
 				pay=new Pay({id:id});
 				pay.fetch({
 					success: function() {
-						console.log('pay.fetch('+id+') - success');
+						//console.log('pay.fetch('+id+') - success');
 						new DeleteDialogView({
 							model:pay,
 							headerText:Translation.get('pay.delete'),
 							backLink: '#account/'+pay.get('account_id')+'/show'});
 					},
 					error: function() {
-						console.log('pay.fetch('+id+') - error');
+						//console.log('pay.fetch('+id+') - error');
 					}
 				});
 			}
@@ -134,11 +155,11 @@ define(['jquery',
 				category=new Category({id:id});
 				category.fetch({
 					success: function() {
-						console.log('category.fetch('+id+') - success');
+						//console.log('category.fetch('+id+') - success');
 						new CategoryEditPage({model:category});
 					},
 					error: function() {
-						console.log('category.fetch('+id+') - error');
+						//console.log('category.fetch('+id+') - error');
 					}
 				});
 			}
@@ -158,17 +179,37 @@ define(['jquery',
 				var category=new Category({id:id});
 				category.fetch({
 					success: function() {
-						console.log('category.fetch('+id+') - success');
+						//console.log('category.fetch('+id+') - success');
 						new DeleteDialogView({
 							model:category,
 							headerText:Translation.get('category.delete')+' '+category.get('name'),
 							backLink: '#category/list'});
 					},
 					error: function() {
-						console.log('category.fetch('+id+') - error');
+						//console.log('category.fetch('+id+') - error');
 					}
 				});
 			}
+		},
+		
+		Charts: function() {
+			if(!this.chart_options) {
+				this.chart_options=new ChartModel();
+	          	var today=new Date();
+	          	var dayAfter=new Date(today.getFullYear(),today.getMonth(),1);
+	          	var dayBefore=new Date(today.getFullYear(),today.getMonth()+1,1);
+	          	
+				this.chart_options.set('kind_charts',0);
+				this.chart_options.set('after',dayAfter);
+				this.chart_options.set('before',dayBefore);
+			}
+			var self=this;
+			var chart_collect=new ChartCollection();
+			chart_collect.fetch({
+				success: function() {
+					new GraphOptionsView({model:self.chart_options,currencies:chart_collect});					
+				}
+			});
 		},
 		
 		// Utils
@@ -187,14 +228,40 @@ define(['jquery',
 				return this.account_list;
 			}
 		},
+	
+		getAccountListByCurrency: function(currency) {
+			return this.account_list.where({currency:currency});
+		},
+		getAccountListByAccountId: function(id) {
+			var account=this.account_list.get(id);
+			var collect=new Backbone.Collection();
+			collect.add(this.account_list.where({currency:account.get('currency')}));
+			return collect;
+		},
+		
+		getAccountListAndFetch: function(callback) {
+			this.getAccountList();
+			if(this.account_list.length > 0) {
+				callback(this.account_list);
+			} else {
+				this.account_list.fetch({
+					success: function() {
+						callback(this.account_list);
+					},
+					error: function() {
+						//console.log('category.fetch('+id+') - error');
+					}			
+					});
+			}
+		},
 		
 		getPayList: function(id) {
-			console.log('get pay list '+id);
+			//console.log('get pay list '+id);
 			if(this.pay_list && (this.pay_list.account_id == id)) {
-				console.log('get pay list '+id+'(old)');
+				//console.log('get pay list '+id+'(old)');
 				return this.pay_list; 
 			} else {
-				console.log('get pay list '+id+'(new)');
+				//console.log('get pay list '+id+'(new)');
 	    		this.pay_list=new PayList();
 	    		this.pay_list.account_id=id;
 	    		this.pay_list.loaded=false;
