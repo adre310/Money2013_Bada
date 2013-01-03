@@ -8,7 +8,7 @@
     <Vendor>IAE Inc.</Vendor>
     <Description>Small Web Application for Home Budget</Description>
     <Icons>
-        <MainMenu>Money2013_type4.png<Type1/>
+        <MainMenu>icon.png<Type1/>
             <Type2/>
             <Type3>icon.png</Type3>
             <Type4>icon.png</Type4>
@@ -17,7 +17,7 @@
         <Setting/>
         <Ticker/>
         <QuickPanel/>
-        <LaunchImage>Splash_type4.png<Type1/>
+        <LaunchImage>splash.png<Type1/>
             <Type2/>
             <Type3>splash.png</Type3>
             <Type4>splash.png</Type4>
