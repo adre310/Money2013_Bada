@@ -61,6 +61,7 @@ define(['jquery',
 						new GraphView({data:data});
 					}, 
 					error:  function(jqXHR, textStatus, errorThrown) {
+						_gaq.push(['_trackEvent','chart', errorThrown]);
 					}
 				});
 				

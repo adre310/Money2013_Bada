@@ -128,11 +128,13 @@ define(['jquery',
 							app.isLogin=true;
 							app.navigate('account/list',{replace:true, trigger:true});							
 						} else {
+							_gaq.push(['_trackEvent','login', data.error]);
 							console.log('login saved - error: '+data.error);
 							$("label.form-error").html(data.error).attr("style","");							
 						}
 					},
 					error:  function(jqXHR, textStatus, errorThrown) {
+						_gaq.push(['_trackEvent','login', errorThrown]);
 						console.log('error login saved');
 						// Remove loading message.
 						//$.mobile.loading( 'hide' );
@@ -191,11 +193,13 @@ define(['jquery',
 							self.contentEl.html(data.error);
 							
 						} else {
+							_gaq.push(['_trackEvent','register', data.error]);
 							console.log('Register success - error: '+data.error);
 							$("label.form-error").html(data.error).show();
 						}
 					},
 					error:  function(jqXHR, textStatus, errorThrown) {
+						_gaq.push(['_trackEvent','register', errorThrown]);
 						console.log('error register');
 					} 
 				});
@@ -250,11 +254,13 @@ define(['jquery',
 							console.log('login saved - successfull');
 							self.contentEl.html(data.error);
 						} else {
+							_gaq.push(['_trackEvent','reset', data.error]);
 							console.log('login saved - error: '+data.error);
 							$("label.form-error").html(data.error).attr("style","");							
 						}
 					},
 					error:  function(jqXHR, textStatus, errorThrown) {
+						_gaq.push(['_trackEvent','reset', errorThrown]);
 						console.log('error login saved');
 						// Remove loading message.
 						//$.mobile.loading( 'hide' );

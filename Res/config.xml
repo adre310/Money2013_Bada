@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <widget>
-	<access origin="http://money2013.net"/>
-	<access origin="https://money2013.net"/>
-	<access origin="https://ssl.google-analytics.com"/>
-	<access origin="http://www.google-analytics.com"/>
+	<access origin="*" />
 </widget>

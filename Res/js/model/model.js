@@ -58,12 +58,14 @@ define(['jquery',
 							if(fn_success)
 								fn_success();
 						} else {
+							_gaq.push(['_trackEvent','sync-'+method, data.error]);
 							//console.log('return - error: '+data.error);
 							if(fn_error)
 								fn_error(data.error);
 						}
 					}, 
 					error:  function(jqXHR, textStatus, errorThrown) {
+						_gaq.push(['_trackEvent','sync-'+method, errorThrown]);
 						//console.log('API.BaseModel sync error - '+textStatus);
 						if(fn_error)
 							fn_error('error');

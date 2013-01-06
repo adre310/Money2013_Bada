@@ -7,7 +7,11 @@ Translation = {
 			this.items=data;
 		},
 		get: function(id) {
-			//console.log('Translation.get('+id+') = '+this.items[id]);
-			return this.items[id];
+			if(this.items) {
+				return this.items[id];
+			} else {
+				console.log('Translation.get('+id+') ERROR ');
+				return id;
+			}
 		}
 	};
