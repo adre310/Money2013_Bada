@@ -56,7 +56,7 @@ define(['jquery',
 					url : Routing.generate('rest_api_v3_post_charts'),
 					type: 'POST',
 					dataType: 'json',
-					data: this.model.toJSON(),
+					data: this.model.toSendData(),
 					success: function(data, textStatus, jqXHR) {
 						new GraphView({data:data});
 					}, 

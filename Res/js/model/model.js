@@ -7,6 +7,9 @@ define(['jquery',
 		
 	window.API={};	
 	window.API.BaseModel=Backbone.Model.extend({
+		toSendData: function() {
+			return {};
+		},
 	    save: function(key, value, options) {
 	        //console.log('save');
 	        var attrs, current;
@@ -50,7 +53,7 @@ define(['jquery',
 					url : url,
 					type: 'POST',
 					dataType: 'json',
-					data: this.toJSON(),
+					data: this.toSendData(),
 					success: function(data, textStatus, jqXHR) {
 						//console.log('API.BaseModel sync success');
 						if(data.success) {
@@ -97,7 +100,22 @@ define(['jquery',
 				pattern: 'number',
 				msg: Translation.get('validate.number')				
 			}]
-		}
+		},
+		toSendData: function() {
+			if(typeof this.attributes.pay_date == 'string') {
+				this.attributes.pay_date=Date.iso8601(this.attributes.pay_date);
+	    	 };
+	    	 
+			return {
+				id: this.attributes.id,
+				notes: this.attributes.notes,
+				pay_value: this.attributes.pay_value,
+				pay_date: this.attributes.pay_date.toJSON(),
+				category_id: this.attributes.category_id,
+				account_id: this.attributes.account_id
+			};
+		},
+
 	});
 
 	window.PayList=Backbone.Collection.extend({
@@ -126,6 +144,14 @@ define(['jquery',
 			id: null,
 			name: '',
 			notes: ''
+		},
+		toSendData: function() {
+	    	 return {
+				id: this.attributes.id,
+				notes: this.attributes.notes,
+				name: this.attributes.name,
+				currency: this.attributes.currency,
+			};
 		},
 				
 		toString: function() {
@@ -156,6 +182,14 @@ define(['jquery',
 			id: null,
 			name: '',
 			notes: ''
+		},
+		toSendData: function() {	    	 
+			return {
+				id: this.attributes.id,
+				notes: this.attributes.notes,
+				name: this.attributes.name,
+				theme_id: this.attributes.theme_id,
+			};
 		},
 		toString: function() {
 			return this.attributes.name;
@@ -216,7 +250,15 @@ define(['jquery',
 			value: '',
 			account_from_id: '',
 			account_to_id: ''
-		}
+		},
+		toSendData: function() {	    	 
+			return {
+				value: this.attributes.value,
+				account_from_id: this.attributes.account_from_id,
+				account_to_id: this.attributes.account_to_id,
+			};
+		},
+
 	});
 	
 	window.Merge=API.BaseModel.extend({
@@ -228,7 +270,13 @@ define(['jquery',
 			id: null,
 			account_from_id: '',
 			account_to_id: ''
-		}
+		},
+		toSendData: function() {	    	 
+			return {
+				account_from_id: this.attributes.account_from_id,
+				account_to_id: this.attributes.account_to_id,
+			};
+		},
 	});
 	
 	window.ChartCollection=Backbone.Collection.extend({
@@ -242,5 +290,13 @@ define(['jquery',
 		readUrl:   'rest_api_v3_get_charts',
 		updateUrl: 'rest_api_v3_post_charts',
 		deleteUrl: 'rest_api_v3_post_charts',	
+		toSendData: function() {	    	 
+			return {
+        		currency:      this.attributes.currency,
+        		account_id:    this.attributes.account_id,
+        		after:         this.attributes.after.toJSON(),
+        		before:        this.attributes.before.toJSON(),
+			};
+		},
 	});
 });
